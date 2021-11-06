@@ -1,3 +1,9 @@
+.vagrant/
+.vscode/
+
+bin/
+build/
+
 # Prerequisites
 *.d
 
