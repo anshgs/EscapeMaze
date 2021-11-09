@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "my_functions.hpp"
+#include <ai.hpp>
+#include <item.hpp>
+
 
 int main() {
 
