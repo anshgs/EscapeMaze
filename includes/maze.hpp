@@ -18,6 +18,7 @@ class Maze {
         void MazeOut();
         // generate the coordinates of a wall; dim: num of bricks * 12(4*3)
         std::set<std::vector<float>> GetWallCoor();
+        // float* WallCoorArray(std::set<std::vector<float>> coor);
 
 
 
