@@ -18,8 +18,18 @@ void processInput(GLFWwindow *window);
 float vertices[] = {
         -0.5f, -0.5f, 0.0f, // left  
          0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
+        0.5f, 0.5f, 0.0f, // right  
+         -0.5f,  0.5f, 0.0f, // top  
+         0.8f, 0.9f, 0.0f,
+        0.8f, 0.8f, 0.0f,
+        0.9f, 0.9f, 0.0f,
     }; 
+
+unsigned int indices[] = {  // note that we start from 0!
+    0, 1, 3,   // first triangle
+    1, 2, 3,    // second triangle
+    4, 5, 6,
+};
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -38,6 +48,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n\0";
 
+    const char *fragmentShaderSource2 = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
+    "}\n\0";
+
 int main()
 {
     srand((unsigned int)time(NULL));
@@ -48,14 +65,15 @@ int main()
     }
     cout << endl;
     for (int i = 0; i < 10; ++i){
-        cout << "|";
         for (int j = 0; j < 10; ++j){
             Locinfo c = maze.GetLocinfo(i, j);
-            cout << (c.down ? " " : "_");
-            if (c.right)
+            if (c.left)
                 cout << " ";
             else cout << "|";
+            cout << (c.down ? " " : "_");
+            
         }
+        cout << "|";
         cout << endl;
     }
     // glfw: initialize and configure
@@ -96,6 +114,7 @@ int main()
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
+
     // check for shader compile errors
     int success;
     char infoLog[512];
@@ -109,6 +128,11 @@ int main()
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
+
+
+    unsigned int fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
+    glCompileShader(fragmentShader2);
     // check for shader compile errors
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
@@ -121,6 +145,12 @@ int main()
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
+
+    unsigned int shaderProgram2 = glCreateProgram();
+    glAttachShader(shaderProgram2, vertexShader);
+    glAttachShader(shaderProgram2, fragmentShader2);
+    glLinkProgram(shaderProgram2);
+    
     // check for linking errors
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
@@ -133,9 +163,8 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
 
-
     // uncomment this call to draw in wireframe polygons.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -150,15 +179,24 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
         unsigned int VBO, VAO;
+
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
 
+
+
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -172,9 +210,11 @@ int main()
 
 
         // draw our first triangle
-        glUseProgram(shaderProgram);
+        glUseProgram(shaderProgram2);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glUseProgram(shaderProgram);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -199,28 +239,36 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
-    float inc = 0.1f;
+    float inc = 0.005f;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        vertices[0]+=inc;
-        vertices[3]+=inc;
-        vertices[6]+=inc;
+        if(vertices[3]+inc <= 1){
+            vertices[0]+=inc;
+            vertices[3]+=inc;
+            vertices[6]+=inc;
+        }
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        vertices[0]-=inc;
-        vertices[3]-=inc;
-        vertices[6]-=inc;
+        if(vertices[0]-inc>=-1){
+            vertices[0]-=inc;
+            vertices[3]-=inc;
+            vertices[6]-=inc;
+        }
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        vertices[1]-=inc;
-        vertices[4]-=inc;
-        vertices[7]-=inc;
+        if(vertices[1]-inc >= -1){
+            vertices[1]-=inc;
+            vertices[4]-=inc;
+            vertices[7]-=inc;
+        }
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        vertices[1]+=inc;
-        vertices[4]+=inc;
-        vertices[7]+=inc;
+        if(vertices[7]+inc <= 1){
+            vertices[1]+=inc;
+            vertices[4]+=inc;
+            vertices[7]+=inc;
+        }
     }
 }
 
