@@ -40,6 +40,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
 
 int main()
 {
+    srand((unsigned int)time(NULL));
     Maze maze(10, 10);
     maze.GenerateMaze(10, 10);
     for(int i = 0; i < 2*10; ++i){
