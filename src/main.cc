@@ -17,19 +17,21 @@ using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-        0.5f, 0.5f, 0.0f, // right  
-         -0.5f,  0.5f, 0.0f, // top  
-         0.8f, 0.9f, 0.0f,
-        0.8f, 0.8f, 0.0f,
+        0.5f, 0.5f, 0.0f, // left  
+         0.6f, 0.5f, 0.0f, // right 
+        0.6f, 0.6f, 0.0f, // right  
+         0.5f,  0.6f, 0.0f, // top  
+         0.7f, 0.7f, 0.0f,
+        0.9f, 0.7f, 0.0f,
         0.9f, 0.9f, 0.0f,
+        0.7f, 0.9f, 0.0f,
     }; 
 
 unsigned int indices[] = {  // note that we start from 0!
     0, 1, 3,   // first triangle
     1, 2, 3,    // second triangle
-    4, 5, 6,
+    4, 5, 7,
+    5, 6, 7,
 };
 
 // settings
@@ -198,7 +200,7 @@ int main()
         // draw our first triangle
         glUseProgram(shaderProgram2);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
         glUseProgram(shaderProgram);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
@@ -221,39 +223,59 @@ int main()
     return 0;
 }
 
+
+bool collide(float obj1[], float obj2[], float dx, float dy){ //x1 x2 y1 y2
+    obj1[0]+=dx;
+    obj1[1]+=dx;
+    obj1[2]+=dy;
+    obj1[3]+=dy;
+    bool xl = (obj1[0] < obj2[0] && obj1[1] > obj2[0]) || (obj1[0] < obj2[1] && obj1[1] > obj2[1]) || (obj1[0] < obj2[0] && obj1[1] > obj2[1]) || (obj1[0] > obj2[0] && obj1[1] < obj2[1]);
+    bool yl = (obj1[2] < obj2[2] && obj1[3] > obj2[2]) || (obj1[2] < obj2[3] && obj1[3] > obj2[3]) || (obj1[2] < obj2[2] && obj1[3] > obj2[3]) || (obj1[2] > obj2[2] && obj1[3] < obj2[3]);
+    obj1[0]-=dx;
+    obj1[1]-=dx;
+    obj1[2]-=dy;
+    obj1[3]-=dy;
+    return xl&&yl;
+}
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
-    float inc = 0.005f;
+    float inc = 0.0001f;
+    float curCord[] = {vertices[0], vertices[3], vertices[1], vertices[10]};
+    float mazeCord[] = {vertices[12], vertices[15], vertices[13], vertices[22]};
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        if(vertices[3]+inc <= 1){
+        if(vertices[3]+inc <= 1 && !collide(curCord, mazeCord, inc, 0)){
             vertices[0]+=inc;
             vertices[3]+=inc;
             vertices[6]+=inc;
+            vertices[9]+=inc;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        if(vertices[0]-inc>=-1){
+        if(vertices[0]-inc>=-1 && !collide(curCord, mazeCord, -inc, 0)){
             vertices[0]-=inc;
             vertices[3]-=inc;
             vertices[6]-=inc;
+            vertices[9]-=inc;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        if(vertices[1]-inc >= -1){
+        if(vertices[1]-inc >= -1 && !collide(curCord, mazeCord, 0, -inc)){
             vertices[1]-=inc;
             vertices[4]-=inc;
             vertices[7]-=inc;
+            vertices[10]-=inc;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        if(vertices[7]+inc <= 1){
+        if(vertices[7]+inc <= 1 && !collide(curCord, mazeCord, 0, inc)){
             vertices[1]+=inc;
             vertices[4]+=inc;
             vertices[7]+=inc;
+            vertices[10]+=inc;
         }
     }
 }
