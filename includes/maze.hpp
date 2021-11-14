@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "locinfo.hpp"
+#include <set>
 class Maze { 
     public:
         Maze(int width, int height);
@@ -15,6 +16,9 @@ class Maze {
         void GenerateMaze(int width, int height);
         // draw maze in cout for tesint purpose [TEST]
         void MazeOut();
+        // generate the coordinates of a wall; dim: num of bricks * 12(4*3)
+        std::set<std::vector<float>> GetWallCoor();
+
 
 
 

@@ -130,3 +130,48 @@ void Maze::GenerateMaze(int width, int height){
     }
 }
 
+void Maze::MazeOut() {
+    for(int i = 0; i < 10; ++i){
+        std::cout << " _";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < 10; ++i){
+        for (int j = 0; j < 10; ++j){
+            Locinfo c = mazedata_[i][j];
+            if (c.left)
+                std::cout << " ";
+            else std::cout << "|";
+            std::cout << (c.down ? " " : "_");
+            
+        }
+        std::cout << "|";
+        std::cout << std::endl;
+    }
+}
+
+
+std::set<std::vector<float>> Maze::GetWallCoor() {
+    std::set<std::vector<float>> toreturn;
+    // -0.7 to 0.7
+    float range = 1.4;
+    // the height of every brick
+    float b_height = 1.4/height_;
+    float b_width = 0.05;
+    for(int i = 0; i < height_; i++) {
+        for (int j = 0; j < width_; j++) {
+            std::vector<float> coor;
+            if(mazedata_[i][j].left == false) {
+                //push the four points of the left wall into coor in format of x1,x2,y1,y2
+                // x1
+                coor.push_back(j * b_height);
+                // x2
+                coor.push_back(j*b_height + b_width);
+                // y1
+                coor.push_back(b_width + i*b_height);
+                // y2
+            }
+        }
+    }
+
+
+} 

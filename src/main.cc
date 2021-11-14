@@ -11,6 +11,7 @@
 #include "maze.hpp"
 #include "user.hpp"
 #include "locinfo.hpp"
+#include "time.h"
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -60,22 +61,7 @@ int main()
     srand((unsigned int)time(NULL));
     Maze maze(10, 10);
     maze.GenerateMaze(10, 10);
-    for(int i = 0; i < 2*10; ++i){
-        cout << "_";
-    }
-    cout << endl;
-    for (int i = 0; i < 10; ++i){
-        for (int j = 0; j < 10; ++j){
-            Locinfo c = maze.GetLocinfo(i, j);
-            if (c.left)
-                cout << " ";
-            else cout << "|";
-            cout << (c.down ? " " : "_");
-            
-        }
-        cout << "|";
-        cout << endl;
-    }
+    maze.MazeOut();
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
