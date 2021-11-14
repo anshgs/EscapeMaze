@@ -173,5 +173,5 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
         }
     }
 
-
+    return toreturn;
 } 
