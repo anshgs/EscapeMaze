@@ -1,6 +1,7 @@
 #include "maze.hpp"
 #include <utility>
 #include <stack>
+#include <iostream>
 Maze::Maze(int width, int height) {
     width_ = width;
     height_ = height;
@@ -71,7 +72,7 @@ std::string Maze::RandomNeighbor(int y, int x) {
 }
 
 void Maze::GenerateMaze(int width, int height){
-    Locinfo l = {false,false,false,false};
+    Locinfo l = {false,false,false,false, false};
     std::vector<Locinfo> currow(width,l);
     mazedata_.assign(height_, currow);
     // TODO: now the start point is set at the top left corner. May modify later
@@ -86,8 +87,10 @@ void Maze::GenerateMaze(int width, int height){
         // Pop a cell from the stack and make it a current cell
         cur = trace.top();
         trace.pop();
+        // mark the current cell as visited
+        mazedata_[cur.first][cur.second].visited = true;
         // If the current cell has any neighbours which have not been visited
-        Locinfo curinfo = mazedata_[cur.first][cur.second];
+        Locinfo* curinfo = &mazedata_[cur.first][cur.second];
         std::string nei = RandomNeighbor(cur.first, cur.second);
         if(nei == "no") {
             continue;
@@ -95,34 +98,34 @@ void Maze::GenerateMaze(int width, int height){
         // Push the current cell to the stack
         trace.push(cur);
         std::pair<int,int> chosen_loc;
-        Locinfo chosen_n;
+        Locinfo* chosen_n;
         // Choose one of the unvisited neighbours  Remove the wall between the current cell and the chosen cell
         if(nei == "left") {
-            curinfo.left = true;
-            chosen_n = mazedata_[cur.first][cur.second-1];
-            chosen_n.right = true;
+            curinfo->left = true;
+            chosen_n = &mazedata_[cur.first][cur.second-1];
+            chosen_n->right = true;
             chosen_loc = std::make_pair(cur.first,cur.second-1);
         }
         if(nei == "right") {
-            curinfo.right = true;
-            chosen_n = mazedata_[cur.first][cur.second+1];
-            chosen_n.left = true;
+            curinfo->right = true;
+            chosen_n = &mazedata_[cur.first][cur.second+1];
+            chosen_n->left = true;
             chosen_loc = std::make_pair(cur.first,cur.second+1);
         }
         if(nei == "up") {
-            curinfo.up = true;
-            chosen_n = mazedata_[cur.first-1][cur.second];
-            chosen_n.down = true;
+            curinfo->up = true;
+            chosen_n = &mazedata_[cur.first-1][cur.second];
+            chosen_n->down = true;
             chosen_loc = std::make_pair(cur.first-1,cur.second);
         }
         if(nei == "down") {
-            curinfo.down = true;
-            chosen_n = mazedata_[cur.first+1][cur.second];
-            chosen_n.up = true;
+            curinfo->down = true;
+            chosen_n = &mazedata_[cur.first+1][cur.second];
+            chosen_n->up = true;
             chosen_loc = std::make_pair(cur.first+1,cur.second);
         }
          // Mark the chosen cell as visited and push it to the stack
-        chosen_n.visited = true;
+        //chosen_n.visited = true;
         trace.push(chosen_loc);
     }
 }

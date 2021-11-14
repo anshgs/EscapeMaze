@@ -10,6 +10,8 @@
 #include "game.hpp"
 #include "maze.hpp"
 #include "user.hpp"
+#include "locinfo.hpp"
+using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -38,6 +40,23 @@ const char *fragmentShaderSource = "#version 330 core\n"
 
 int main()
 {
+    Maze maze(10, 10);
+    maze.GenerateMaze(10, 10);
+    for(int i = 0; i < 2*10; ++i){
+        cout << "_";
+    }
+    cout << endl;
+    for (int i = 0; i < 10; ++i){
+        cout << "|";
+        for (int j = 0; j < 10; ++j){
+            Locinfo c = maze.GetLocinfo(i, j);
+            cout << (c.down ? " " : "_");
+            if (c.right)
+                cout << " ";
+            else cout << "|";
+        }
+        cout << endl;
+    }
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -112,11 +131,10 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    
 
 
     // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -149,7 +167,7 @@ int main()
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    // glBindVertexArray(0); 
+    glBindVertexArray(0); 
 
 
         // draw our first triangle
