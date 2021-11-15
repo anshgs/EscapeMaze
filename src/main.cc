@@ -12,6 +12,7 @@
 #include "user.hpp"
 #include "locinfo.hpp"
 #include "time.h"
+#include <chrono>
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -88,12 +89,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
     "}\n\0";
 
-       Maze maze(5, 5);
+       Maze maze(10, 10);
 
 int main()
 {
     srand((unsigned int)time(NULL));
-    maze.GenerateMaze(5, 5);
+    auto start = std::chrono::system_clock::now();
+    maze.GenerateMaze(10, 10);
     maze.MazeOut();
     vertices = maze.WallCoorArray(maze.GetWallCoor());
     indices = maze.WallCoorIndex(maze.GetWallCoor().size());
@@ -220,11 +222,12 @@ int main()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
+    int counter = 0;
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        
         // input
         // -----
         processInput(window);
@@ -233,7 +236,27 @@ int main()
         // ------
     glClear(GL_COLOR_BUFFER_BIT);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    
+        
+        //Redo map
+        auto curTime = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed = curTime - start;
+        if(elapsed.count() > counter*10){
+            maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
+            maze.MazeOut();
+            vertices = maze.WallCoorArray(maze.GetWallCoor());
+            indices = maze.WallCoorIndex(maze.GetWallCoor().size());
+            counter++;
+            glBindVertexArray(VAO[0]);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+            glBufferData(GL_ARRAY_BUFFER, maze.GetWallCoor().size()*48, vertices, GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, maze.GetWallCoor().size()*24, indices, GL_STATIC_DRAW); 
+
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+        }
+
     //player 
     glBindVertexArray(VAO[2]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);

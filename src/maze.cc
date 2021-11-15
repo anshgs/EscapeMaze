@@ -156,7 +156,7 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
     float range = 1.4f;
     // the height of every brick
     float b_height = 1.4f/height_;
-    float b_width = 0.05f;
+    float b_width = 0.01f;
     for(int i = 0; i < height_; i++) {
         for (int j = 0; j < width_; j++) {
             std::vector<float> leftcoor;
