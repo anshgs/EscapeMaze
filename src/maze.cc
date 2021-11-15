@@ -181,7 +181,10 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
                 // x1
                 topcoor.push_back(-0.7f +(b_height) * j);
                 // x2
-                topcoor.push_back(-0.7f +(b_height) * (j+1));
+                if(j!=width_-1)
+                    topcoor.push_back(-0.7f +(b_height) * (j+1) + b_width);
+                else   
+                    topcoor.push_back(-0.7f +(b_height) * (j+1) + b_width);
                 // y1
                 topcoor.push_back(0.7f - (b_height) * i);
                 // y2

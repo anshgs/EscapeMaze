@@ -19,10 +19,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 float playerCoords[] = {
-        -0.6f, 0.55f, 0.0f, // left  
-        -0.55f, 0.55f, 0.0f, // right 
-        -0.55f, 0.6f, 0.0f, // right  
-        -0.6f,  0.6f, 0.0f, // top  
+        -0.675f, 0.65f, 0.0f, // left  
+        -0.65f, 0.65f, 0.0f, // right 
+        -0.65f, 0.675f, 0.0f, // right  
+        -0.675f,  0.675f, 0.0f, // top  
 };
 
 float* vertices;
@@ -47,10 +47,10 @@ unsigned int *indices;
 // };
 
 float winV[] = {
-    0.55f, -0.6f, 0.0f, // left  
-    0.6f, -0.6f, 0.0f, // right 
-    0.6f, -0.55f, 0.0f, // right  
-    0.55f,  -0.55f, 0.0f, // top  
+    0.65f, -0.65f, 0.0f, // left  
+    0.675f, -0.65f, 0.0f, // right 
+    0.675f, -0.675f, 0.0f, // right  
+    0.65f,  -0.675f, 0.0f, // top  
 };
 
 unsigned int playerInd[] = {
@@ -89,14 +89,14 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
     "}\n\0";
 
-       Maze maze(10, 10);
+       Maze maze(20, 20);
 
 int main()
 {
     srand((unsigned int)time(NULL));
     auto start = std::chrono::system_clock::now();
-    maze.GenerateMaze(10, 10);
-    maze.MazeOut();
+    maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
+    //maze.MazeOut();
     vertices = maze.WallCoorArray(maze.GetWallCoor());
     indices = maze.WallCoorIndex(maze.GetWallCoor().size());
     // glfw: initialize and configure
@@ -112,7 +112,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "EscapeMaze", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -242,7 +242,7 @@ int main()
         std::chrono::duration<double> elapsed = curTime - start;
         if(elapsed.count() > counter*10){
             maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
-            maze.MazeOut();
+            //maze.MazeOut();
             vertices = maze.WallCoorArray(maze.GetWallCoor());
             indices = maze.WallCoorIndex(maze.GetWallCoor().size());
             counter++;
