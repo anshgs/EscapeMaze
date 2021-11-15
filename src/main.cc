@@ -18,6 +18,8 @@ using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
+bool gameOver = false;
+
 float playerCoords[] = {
         -0.675f, 0.65f, 0.0f, // left  
         -0.65f, 0.65f, 0.0f, // right 
@@ -231,30 +233,34 @@ int main()
         // input
         // -----
         processInput(window);
-
         // render
         // ------
     glClear(GL_COLOR_BUFFER_BIT);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
         
         //Redo map
-        auto curTime = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed = curTime - start;
-        if(elapsed.count() > counter*10){
-            maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
-            //maze.MazeOut();
-            vertices = maze.WallCoorArray(maze.GetWallCoor());
-            indices = maze.WallCoorIndex(maze.GetWallCoor().size());
-            counter++;
-            glBindVertexArray(VAO[0]);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-            glBufferData(GL_ARRAY_BUFFER, maze.GetWallCoor().size()*48, vertices, GL_STATIC_DRAW);
+        if(gameOver){
+            start = std::chrono::system_clock::now();
+            counter = 0;
+        }else{
+            auto curTime = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed = curTime - start;
+            if(elapsed.count() > counter*10){
+                maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
+                //maze.MazeOut();
+                vertices = maze.WallCoorArray(maze.GetWallCoor());
+                indices = maze.WallCoorIndex(maze.GetWallCoor().size());
+                counter++;
+                glBindVertexArray(VAO[0]);
+                glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+                glBufferData(GL_ARRAY_BUFFER, maze.GetWallCoor().size()*48, vertices, GL_STATIC_DRAW);
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, maze.GetWallCoor().size()*24, indices, GL_STATIC_DRAW); 
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, maze.GetWallCoor().size()*24, indices, GL_STATIC_DRAW); 
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+                glEnableVertexAttribArray(0);
+            }
         }
 
     //player 
@@ -365,40 +371,64 @@ void processInput(GLFWwindow *window)
         float c3 = (rand()%10)/10.0f;
         glClearColor(c1, c2, c3, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        gameOver = true;
     }
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        if(playerCoords[3]+inc <= 1 && !collide(curCord, walls, inc, 0)){
-            playerCoords[0]+=inc;
-            playerCoords[3]+=inc;
-            playerCoords[6]+=inc;
-            playerCoords[9]+=inc;
-        }
+
+    if (gameOver && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        playerCoords[0] = -0.675f;
+        playerCoords[1] = 0.65f;
+        playerCoords[2] = 0.0f;
+        playerCoords[3] = -0.65f;
+        playerCoords[4] = 0.65f;
+        playerCoords[5] = 0.0f;
+        playerCoords[6] = -0.65f;
+        playerCoords[7] = 0.675f;
+        playerCoords[8] = 0.0f;
+        playerCoords[9] = -0.675f;
+        playerCoords[10] = 0.675f;
+        playerCoords[11] = 0.0f;
+        maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        gameOver = false;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        if(playerCoords[0]-inc>=-1 && !collide(curCord, walls, -inc, 0)){
-            playerCoords[0]-=inc;
-            playerCoords[3]-=inc;
-            playerCoords[6]-=inc;
-            playerCoords[9]-=inc;
+
+
+    if(!gameOver){
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+            if(playerCoords[3]+inc <= 1 && !collide(curCord, walls, inc, 0)){
+                playerCoords[0]+=inc;
+                playerCoords[3]+=inc;
+                playerCoords[6]+=inc;
+                playerCoords[9]+=inc;
+            }
         }
-    }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        if(playerCoords[1]-inc >= -1 && !collide(curCord, walls, 0, -inc)){
-            playerCoords[1]-=inc;
-            playerCoords[4]-=inc;
-            playerCoords[7]-=inc;
-            playerCoords[10]-=inc;
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+            if(playerCoords[0]-inc>=-1 && !collide(curCord, walls, -inc, 0)){
+                playerCoords[0]-=inc;
+                playerCoords[3]-=inc;
+                playerCoords[6]-=inc;
+                playerCoords[9]-=inc;
+            }
         }
-    }
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        if(playerCoords[7]+inc <= 1 && !collide(curCord, walls, 0, inc)){
-            playerCoords[1]+=inc;
-            playerCoords[4]+=inc;
-            playerCoords[7]+=inc;
-            playerCoords[10]+=inc;
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+            if(playerCoords[1]-inc >= -1 && !collide(curCord, walls, 0, -inc)){
+                playerCoords[1]-=inc;
+                playerCoords[4]-=inc;
+                playerCoords[7]-=inc;
+                playerCoords[10]-=inc;
+            }
+        }
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+            if(playerCoords[7]+inc <= 1 && !collide(curCord, walls, 0, inc)){
+                playerCoords[1]+=inc;
+                playerCoords[4]+=inc;
+                playerCoords[7]+=inc;
+                playerCoords[10]+=inc;
+            }
         }
     }
 }
