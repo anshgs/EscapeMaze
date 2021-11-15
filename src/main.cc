@@ -18,28 +18,38 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 float playerCoords[] = {
-        0.5f, 0.5f, 0.0f, // left  
-        0.6f, 0.5f, 0.0f, // right 
-        0.6f, 0.6f, 0.0f, // right  
-        0.5f,  0.6f, 0.0f, // top  
+        -0.6f, 0.55f, 0.0f, // left  
+        -0.55f, 0.55f, 0.0f, // right 
+        -0.55f, 0.6f, 0.0f, // right  
+        -0.6f,  0.6f, 0.0f, // top  
 };
 
-float vertices[] = {
-        0.1f, 0.1f, 0.0f,
-        0.3f, 0.1f, 0.0f,
-        0.3f, 0.3f, 0.0f,
-        0.1f, 0.3f, 0.0f,
-        0.4f, -0.2f, 0.0f,
-        0.5f, -0.2f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.4f, 0.0f, 0.0f,
-    };
+float* vertices;
+// = {
+//         0.1f, 0.1f, 0.0f,
+//         0.3f, 0.1f, 0.0f,
+//         0.3f, 0.3f, 0.0f,
+//         0.1f, 0.3f, 0.0f,
+//         0.4f, -0.2f, 0.0f,
+//         0.5f, -0.2f, 0.0f,
+//         0.5f, 0.0f, 0.0f,
+//         0.4f, 0.0f, 0.0f,
+//     };
+
+unsigned int *indices;
+
+//  = {  // note that we start from 0!
+//     0, 1, 3,   // first triangle
+//     1, 2, 3,    // second triangle
+//     4, 5, 7,
+//     5, 6, 7,
+// };
 
 float winV[] = {
-    -0.1f, -0.1f, 0.0f,
-    0.0f, -0.1f, 0.0f,
-    0.0f, 0.0f, 0.0f, 
-    -0.1f, 0.0f, 0.0f,
+    0.55f, -0.6f, 0.0f, // left  
+    0.6f, -0.6f, 0.0f, // right 
+    0.6f, -0.55f, 0.0f, // right  
+    0.55f,  -0.55f, 0.0f, // top  
 };
 
 unsigned int playerInd[] = {
@@ -52,12 +62,7 @@ unsigned int winIn[] = {
     1, 2, 3,
 };
 
-unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,   // first triangle
-    1, 2, 3,    // second triangle
-    4, 5, 7,
-    5, 6, 7,
-};
+
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -83,12 +88,15 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
     "}\n\0";
 
+       Maze maze(5, 5);
+
 int main()
 {
     srand((unsigned int)time(NULL));
-    Maze maze(10, 10);
-    maze.GenerateMaze(10, 10);
+    maze.GenerateMaze(5, 5);
     maze.MazeOut();
+    vertices = maze.WallCoorArray(maze.GetWallCoor());
+    indices = maze.WallCoorIndex(maze.GetWallCoor().size());
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -190,14 +198,13 @@ int main()
     glGenVertexArrays(3, VAO);
     glGenBuffers(3, VBO);
 
-
     //maze walls
     glBindVertexArray(VAO[0]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, maze.GetWallCoor().size()*48, vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, maze.GetWallCoor().size()*24, indices, GL_STATIC_DRAW); 
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -248,7 +255,7 @@ int main()
 
         glUseProgram(shaderProgram2);
         glBindVertexArray(VAO[0]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, maze.GetWallCoor().size()*6, GL_UNSIGNED_INT, 0);
         
         glUseProgram(shaderProgram2);
         glBindVertexArray(VAO[1]);
@@ -309,18 +316,19 @@ void processInput(GLFWwindow *window)
     curCord.push_back(playerCoords[1]);
     curCord.push_back(playerCoords[10]);
     std::set<std::vector<float>> walls;
-    std::vector<float> mazeCord;
-    mazeCord.push_back(vertices[0]);
-    mazeCord.push_back(vertices[3]);
-    mazeCord.push_back(vertices[1]);
-    mazeCord.push_back(vertices[10]);
-    std::vector<float> mazeCord2;
-    mazeCord2.push_back(vertices[12]);
-    mazeCord2.push_back(vertices[15]);
-    mazeCord2.push_back(vertices[13]);
-    mazeCord2.push_back(vertices[22]);
-    walls.insert(mazeCord);
-    walls.insert(mazeCord2);
+    // std::vector<float> mazeCord;
+    // mazeCord.push_back(vertices[0]);
+    // mazeCord.push_back(vertices[3]);
+    // mazeCord.push_back(vertices[1]);
+    // mazeCord.push_back(vertices[10]);
+    // std::vector<float> mazeCord2;
+    // mazeCord2.push_back(vertices[12]);
+    // mazeCord2.push_back(vertices[15]);
+    // mazeCord2.push_back(vertices[13]);
+    // mazeCord2.push_back(vertices[22]);
+    // walls.insert(mazeCord);
+    // walls.insert(mazeCord2);
+    walls = maze.GetWallCoor();
     std::vector<float> winCoord;
     winCoord.push_back(winV[0]);
     winCoord.push_back(winV[3]);

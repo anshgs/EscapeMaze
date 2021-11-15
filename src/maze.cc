@@ -163,33 +163,36 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
             if(mazedata_[i][j].left == false) {
                 //push the four points of the left wall into coor in format of x1,x2,y1,y2
                 // x1
-                leftcoor.push_back(-0.7f + (b_height-b_width) * j);
+                leftcoor.push_back(-0.7f + (b_height) * j);
                 // x2
-                leftcoor.push_back(-0.7f +(b_height-b_width) * j + b_width);
+                leftcoor.push_back(-0.7f +(b_height) * j + b_width);
                 // y1
-                leftcoor.push_back(-0.7f +(b_height-b_width) * i);
+                leftcoor.push_back(0.7f - (b_height) * i);
                 // y2
-                leftcoor.push_back(-0.7f +(b_height-b_width) * i + b_height);
+                if(i!=height_-1)
+                    leftcoor.push_back(0.7f - (b_height) * (i+1) - b_width);
+                else
+                    leftcoor.push_back(0.7f - (b_height) * (i+1));
                 toreturn.insert(leftcoor);
             }
             std::vector<float> topcoor;
             if(mazedata_[i][j].up == false) {
                 // push top wall into coor
                 // x1
-                topcoor.push_back(-0.7f +(b_height-b_width) * j);
+                topcoor.push_back(-0.7f +(b_height) * j);
                 // x2
-                topcoor.push_back(-0.7f +(b_height-b_width) * j + b_height);
+                topcoor.push_back(-0.7f +(b_height) * (j+1));
                 // y1
-                topcoor.push_back(-0.7f +(b_height-b_width) * i);
+                topcoor.push_back(0.7f - (b_height) * i);
                 // y2
-                topcoor.push_back(-0.7f +(b_height-b_width) * i + b_width);
+                topcoor.push_back(0.7f - (b_height) * i - b_width);
                 toreturn.insert(topcoor);
             }
         }
     }
     // add the rightmost wall 
-    float x1 = -0.7f + (b_height - b_width) * width_;
-    float x2 = -0.7f + x1 + b_width;
+    float x1 = -0.7f + (b_height) * width_;
+    float x2 = x1 + b_width;
     for(int i = 0; i < height_; i++) {
         std::vector<float> temp;
         // x1
@@ -197,20 +200,20 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
         // x2
         temp.push_back(x2);
         // y1
-        temp.push_back(-0.7f +(b_height-b_width) * i);
+        temp.push_back(0.7f - (b_height) * i);
         //y2
-        temp.push_back (-0.7f +(b_height-b_width) * i + b_height);
+        temp.push_back(0.7f - (b_height) * (i+1));
         toreturn.insert(temp);
     }
     //add down wall 
-    float y1 = -0.7f +(b_height - b_width) * height_;
-    float y2 = -0.7f +y1 + b_height;
+    float y1 = -0.7f;
+    float y2 = y1 + b_width;
     for(int i = 0; i < width_; i++) {
         std::vector<float> temp;
         // x1
-        temp.push_back(-0.7f +(b_height-b_width) * i);
+        temp.push_back(-0.7f +(b_height) * i);
         // x2
-        temp.push_back(-0.7f +(b_height-b_width) * i + b_height);
+        temp.push_back(-0.7f +(b_height) * (i+1));
         // y1
         temp.push_back(y1);
         // y2
@@ -220,10 +223,45 @@ std::set<std::vector<float>> Maze::GetWallCoor() {
     return toreturn;
 } 
 
-// float* Maze::WallCoorArray(std::set<std::vector<float>> coor) {
-//     float *output = new float[coor.size() * 4 * 3];
-//     std::set<std::vector<float>>::iterator wIt = coor.begin();
-//     while(wIt != coor.end()) {
-//         output
-//     }
-// }
+float* Maze::WallCoorArray(std::set<std::vector<float>> coor) {
+    float *output = new float[coor.size() * 4 * 3];
+    std::set<std::vector<float>>::iterator wIt = coor.begin();
+    int pos = 0;
+    while(wIt != coor.end()) {
+        std::vector<float> cur = (*wIt);
+        float x1 = cur[0];
+        float x2 = cur[1];
+        float y1 = cur[2];
+        float y2 = cur[3];
+        output[pos]=x1;
+        output[pos+1]=y1;
+        output[pos+2]=0.0f;
+        output[pos+3]=x2;
+        output[pos+4]=y1;
+        output[pos+5]=0.0f;
+        output[pos+6]=x2;
+        output[pos+7]=y2;
+        output[pos+8]=0.0f;
+        output[pos+9]=x1;
+        output[pos+10]=y2;
+        output[pos+11]=0.0f;
+        pos+=12;
+        wIt++;
+    }
+    return output;
+}
+
+unsigned int* Maze::WallCoorIndex(size_t size){
+    unsigned int* output = new unsigned int[size*6];
+    int pos = 0;
+    for(size_t i = 0; i< size; i++){
+        output[pos] = 4*i;
+        output[pos+1] = 4*i+1;
+        output[pos+2] = 4*i+3;
+        output[pos+3] = 4*i+1;
+        output[pos+4] = 4*i+2;
+        output[pos+5] = 4*i+3;
+        pos+=6;
+    }
+    return output;
+}
