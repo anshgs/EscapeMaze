@@ -62,13 +62,13 @@ void Game::GenerateNextLevel(){
         exit(EXIT_SUCCESS);
     }   
     Level next_level = levels_.at(cur_level_++);
-    player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.first, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
+    player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
     Maze maze(next_level.maze_width_, next_level.maze_height_);
     start_time_ = chrono::system_clock::now();
     Play(next_level, maze);
 }
 
-void Game::Play(Level level, Maze maze){
+void Game::Play(Level &level, Maze &maze){
     maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
 
 
@@ -80,8 +80,16 @@ void Game::Play(Level level, Maze maze){
     for (string name : kNames) {
         name_to_size_data_[name] = vector<pair<int, const void*>>();
     }
-    name_to_size_data_["player"] = {{sizeof(player_->GetHitbox()), player_->GetHitbox()}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
-    name_to_size_data_["win_tile"] = {{sizeof(GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY())), GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY())}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
+    float * fetched_player_hitbox = player_->GetHitbox();
+    float * fetched_win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
+    float player_hitbox[12];
+    float win_tile_hitbox[12];
+    for(int i = 0; i < 12; i++){
+        player_hitbox[i] = fetched_player_hitbox[i];
+        win_tile_hitbox[i] = fetched_win_tile_hitbox[i];
+    }
+    name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
+    name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
     for (string name : kNames) {
         BindElement(name);
@@ -106,21 +114,21 @@ void Game::Draw(string object_name){
     glDrawElements(GL_TRIANGLES, name_to_size_data_[object_name][2].first, GL_UNSIGNED_INT, 0);
 }
 
-void Game::ProcessInput(Level level, Maze maze){
+void Game::ProcessInput(Level &level, Maze &maze){
 
     float inc = player_->GetSpeed();
 
     float* player_hitbox = player_->GetHitbox();
-    std::vector<float> player_current_coords;
+    vector<float> player_current_coords;
     player_current_coords.push_back(player_hitbox[0]);
     player_current_coords.push_back(player_hitbox[3]);
     player_current_coords.push_back(player_hitbox[1]);
     player_current_coords.push_back(player_hitbox[10]);
 
-    std::set<std::vector<float>> walls;
+    set<vector<float>> walls;
     walls = maze.GetWallCoor();
     float* win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
-    std::vector<float> win_tile_coords;
+    vector<float> win_tile_coords;
     win_tile_coords.push_back(win_tile_hitbox[0]);
     win_tile_coords.push_back(win_tile_hitbox[3]);
     win_tile_coords.push_back(win_tile_hitbox[1]);
@@ -163,34 +171,38 @@ void Game::ProcessInput(Level level, Maze maze){
     }
 }
 
-void Game::ProcessInputAndRegenerate(Level level, Maze maze){
-    cout << level_over << endl;
-    ProcessInput(level, maze);
+void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
+    
     // render
     // ------
     glClear(GL_COLOR_BUFFER_BIT);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    int regen_counter = 0;
     //Redo map
     if(level_over){
-        start_time_ = std::chrono::system_clock::now();
-        regen_counter = 0;
+        start_time_ = chrono::system_clock::now();
     }
     else{
-        auto cur_time = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed = cur_time - start_time_;
-        if(elapsed.count() > regen_counter*10){
+        chrono::_V2::system_clock::time_point cur_time = chrono::system_clock::now();
+        chrono::duration<double> elapsed = cur_time - start_time_;
+        if(elapsed.count() > level.regen_time_interval){
             maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
-            regen_counter++;
+            start_time_ = chrono::system_clock::now();
             name_to_size_data_["walls"] = maze.GetSizeData();
             BindElement("walls");
         }
+        float * fetched_player_hitbox = player_->GetHitbox();
+        float player_hitbox[12];
+        for(int i = 0; i < 12; i++){
+            player_hitbox[i] = fetched_player_hitbox[i];
+        }
+        name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
         BindElement("player");
         
         for(string name : kNames){
             Draw(name);
         }
     }
+    ProcessInput(level, maze);
     glfwSwapBuffers(game_window_);
     glfwPollEvents();
 }

@@ -21,6 +21,7 @@ struct Level{
     const int maze_width_;
     const pair<float, float> start_coord_;
     const pair<float, float> win_coord_; 
+    const float regen_time_interval;
 };
 class Game { 
     
@@ -39,7 +40,7 @@ class Game {
 
         void Config();
         void InitializeWindow();
-        void ProcessInput(Level level, Maze maze);
+        void ProcessInput(Level &level, Maze &maze);
         map<string, unsigned int> BuildShaders(const char* vertex_source, vector<const char*> fragment_sources, vector<string> fragment_names);
         unsigned int CreateVertexShader(const char* source);
         unsigned int CreateFragmentShader(const char* source);
@@ -48,8 +49,8 @@ class Game {
         unsigned int LinkShader(unsigned int &vertex_shader, unsigned int& fragment_shader);
         void Draw(string object_name);
         void BindElement(string object_name);
-        void Play(Level level, Maze maze);
-        void ProcessInputAndRegenerate(Level level, Maze maze);
+        void Play(Level &level, Maze &maze);
+        void ProcessInputAndRegenerate(Level &level, Maze &maze);
     public:
         void Init();
         void GenerateNextLevel();

@@ -40,10 +40,6 @@ const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"pl
 bool game_over = false;
 bool level_over = false;
 
-//array_buffer_size, element_array_buffer_size, unsigned int vertex_attrib_size
-//map<string, vector<int>> name_to_sizes = {{"walls",{}},{"win_tile",{}},{"player",{}}};
-
-
 
 constexpr unsigned int kNumObjects = 3;
 
