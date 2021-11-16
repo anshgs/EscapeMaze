@@ -1,0 +1,7 @@
+First we need to:
+cd build
+
+Then we need to:
+cmake --build.
+
+.\EscapeMaze.exe
