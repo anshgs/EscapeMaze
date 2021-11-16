@@ -61,6 +61,7 @@ void Game::GenerateNextLevel(){
         cout << "End of Game" << endl;
         exit(EXIT_SUCCESS);
     }   
+    level_over = false;
     Level next_level = levels_.at(cur_level_++);
     player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
     Maze maze(next_level.maze_width_, next_level.maze_height_);
@@ -180,9 +181,10 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     //Redo map
     if(level_over){
         start_time_ = chrono::system_clock::now();
+        GenerateNextLevel();
     }
     else{
-        chrono::_V2::system_clock::time_point cur_time = chrono::system_clock::now();
+        chrono::system_clock::time_point cur_time = chrono::system_clock::now();
         chrono::duration<double> elapsed = cur_time - start_time_;
         if(elapsed.count() > level.regen_time_interval){
             maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
