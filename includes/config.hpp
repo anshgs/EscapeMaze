@@ -8,53 +8,49 @@
 
 using namespace std;
 
-extern const unsigned int kScreenWidth = 800;
-extern const unsigned int kScreenHeight = 800;
+const unsigned int kScreenWidth = 800;
+const unsigned int kScreenHeight = 800;
 
-extern const char *kVertexShaderSource = "#version 330 core\n"
+const char *kVertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n" 
     "{\n"
     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
     "}\0";
-extern const char *kFragmentShaderSourcePlayer = "#version 330 core\n"
+const char *kFragmentShaderSourcePlayer = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n\0";
 
-extern const char *kFragmentShaderSourceWalls = "#version 330 core\n"
+const char *kFragmentShaderSourceWalls = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
     "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
     "}\n\0";
 
-extern const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceWalls, kFragmentShaderSourcePlayer};
+const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceWalls, kFragmentShaderSourcePlayer};
 
-extern const vector<string> kNames = {"walls", "win_tile", "player"};
+const vector<string> kNames = {"walls", "win_tile", "player"};
 
-extern const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"player", 2}};
+const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"player", 2}};
 
-extern bool game_over = false;
-extern bool level_over = false;
+bool game_over = false;
+bool level_over = false;
 
 //array_buffer_size, element_array_buffer_size, unsigned int vertex_attrib_size
-//extern map<string, vector<int>> name_to_sizes = {{"walls",{}},{"win_tile",{}},{"player",{}}};
+//map<string, vector<int>> name_to_sizes = {{"walls",{}},{"win_tile",{}},{"player",{}}};
 
 
 
-extern constexpr unsigned int kNumObjects = 3;
+constexpr unsigned int kNumObjects = 3;
 
-unsigned int player_ind[] = {
+unsigned int rectangle_ind[] = {
     0, 1, 3,
     1, 2, 3,
 };
 
-extern unsigned int win_ind[] = {
-    0, 1, 3,
-    1, 2, 3,
-};
 
 #endif

@@ -1,19 +1,20 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "config.hpp"
 #include "utils.hpp"
 #include "maze.hpp"
 #include "player.hpp"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <chrono>
 #include <utility>
+#include <map>
 using namespace std;
 struct Level{
     const float player_speed_;
+    const float player_width_;
+    const float player_height_;
     const int num_ai_;
     const float ai_speed_;
     const int maze_height_;
@@ -27,15 +28,16 @@ class Game {
     private:
         int cur_level_ = 0;
         vector<Level> levels_;
-        Player player_;
+        Player* player_;
         GLFWwindow* game_window_;
-        unsigned int element_buffer_objects_[kNumObjects];
-        unsigned int vertex_array_objects_[kNumObjects];
-        unsigned int vertex_buffer_objects_[kNumObjects];
+        unsigned int * element_buffer_objects_;
+        unsigned int * vertex_array_objects_;
+        unsigned int * vertex_buffer_objects_;
         map<string, vector<pair<int, const void*>>> name_to_size_data_;
         chrono::_V2::system_clock::time_point start_time_;
         map<string, unsigned int> programs_;
 
+        void Config();
         void InitializeWindow();
         void ProcessInput(Level level, Maze maze);
         map<string, unsigned int> BuildShaders(const char* vertex_source, vector<const char*> fragment_sources, vector<string> fragment_names);
@@ -51,6 +53,7 @@ class Game {
     public:
         void Init();
         void GenerateNextLevel();
+        void AddLevel(Level level);
         
 
 };

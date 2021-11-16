@@ -1,11 +1,14 @@
 #include "game.hpp"
 #include "utils.hpp"
-
+#include "config.hpp"
+#include <iostream>
+void Game::Config(){
+}
 
 void Game::Init(){
     // initialize random seed and start time
     srand((unsigned int)time(NULL));
-
+    InitializeWindow();
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -13,10 +16,16 @@ void Game::Init(){
         exit(EXIT_FAILURE);
     }
 
-    InitializeWindow();
+   
     programs_ = BuildShaders(kVertexShaderSource, kFragmentSources, kNames);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    player_ = new Player();
+
+    element_buffer_objects_ = new unsigned int[kNumObjects];
+    vertex_array_objects_  = new unsigned int[kNumObjects];
+    vertex_buffer_objects_  = new unsigned int[kNumObjects];
 }
 
 void Game::InitializeWindow(){
@@ -39,7 +48,10 @@ void Game::InitializeWindow(){
         return;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)
+        {
+            glViewport(0, 0, width, height);
+        });
     game_window_ = window;
 }
 
@@ -50,6 +62,7 @@ void Game::GenerateNextLevel(){
         exit(EXIT_SUCCESS);
     }   
     Level next_level = levels_.at(cur_level_++);
+    player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.first, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
     Maze maze(next_level.maze_width_, next_level.maze_height_);
     start_time_ = chrono::system_clock::now();
     Play(next_level, maze);
@@ -67,8 +80,8 @@ void Game::Play(Level level, Maze maze){
     for (string name : kNames) {
         name_to_size_data_[name] = vector<pair<int, const void*>>();
     }
-    name_to_size_data_["player"] = {{sizeof(player_.GetHitbox()), player_.GetHitbox()}, {sizeof(player_ind), player_ind}, {6, (void*) 0}};
-    name_to_size_data_["win_tile"] = {{sizeof(GetHitbox(level.win_coord_)), GetHitbox(level.win_coord_)}, {sizeof(win_ind), win_ind}, {6, (void*) 0}};
+    name_to_size_data_["player"] = {{sizeof(player_->GetHitbox()), player_->GetHitbox()}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
+    name_to_size_data_["win_tile"] = {{sizeof(GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY())), GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY())}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
     for (string name : kNames) {
         BindElement(name);
@@ -94,9 +107,10 @@ void Game::Draw(string object_name){
 }
 
 void Game::ProcessInput(Level level, Maze maze){
-    float inc = player_.GetSpeed();
 
-    float* player_hitbox = player_.GetHitbox();
+    float inc = player_->GetSpeed();
+
+    float* player_hitbox = player_->GetHitbox();
     std::vector<float> player_current_coords;
     player_current_coords.push_back(player_hitbox[0]);
     player_current_coords.push_back(player_hitbox[3]);
@@ -105,7 +119,7 @@ void Game::ProcessInput(Level level, Maze maze){
 
     std::set<std::vector<float>> walls;
     walls = maze.GetWallCoor();
-    float* win_tile_hitbox = GetHitbox(level.win_coord_);
+    float* win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
     std::vector<float> win_tile_coords;
     win_tile_coords.push_back(win_tile_hitbox[0]);
     win_tile_coords.push_back(win_tile_hitbox[3]);
@@ -128,28 +142,29 @@ void Game::ProcessInput(Level level, Maze maze){
     if(!level_over){
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && !CollideWalls(player_current_coords, walls, inc, 0)){
-                player_.MoveRight();
+                player_->MoveRight();
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_LEFT) == GLFW_PRESS){
             if(player_current_coords[0]-inc>=-1 && !CollideWalls(player_current_coords, walls, -inc, 0)){
-                player_.MoveLeft();
+                player_->MoveLeft();
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_DOWN) == GLFW_PRESS){
             if(player_current_coords[1]-inc >= -1 && !CollideWalls(player_current_coords, walls, 0, -inc)){
-                player_.MoveDown();
+                player_->MoveDown();
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_UP) == GLFW_PRESS){
             if(player_current_coords[7]+inc <= 1 && !CollideWalls(player_current_coords, walls, 0, inc)){
-                player_.MoveUp();
+                player_->MoveUp();
             }
         }
     }
 }
 
 void Game::ProcessInputAndRegenerate(Level level, Maze maze){
+    cout << level_over << endl;
     ProcessInput(level, maze);
     // render
     // ------
@@ -162,8 +177,8 @@ void Game::ProcessInputAndRegenerate(Level level, Maze maze){
         regen_counter = 0;
     }
     else{
-        auto curTime = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed = curTime - start_time_;
+        auto cur_time = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed = cur_time - start_time_;
         if(elapsed.count() > regen_counter*10){
             maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
             regen_counter++;
@@ -256,4 +271,8 @@ void Game::BindElement(string object_name){
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+}
+
+void Game::AddLevel(Level level){
+    levels_.push_back(level);
 }

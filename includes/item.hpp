@@ -1,7 +1,7 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
-#include "user.hpp"
+#include "player.hpp"
 
 class item {
 

@@ -36,3 +36,27 @@ bool CollideWalls(vector<float> player_coords, set<vector<float>> walls_coords, 
     }
     return false;
 }
+
+float* GetHitbox(pair<float, float> center, float size_x, float size_y){
+    float coord_x = center.first;
+    float coord_y = center.second;
+    float x1 = coord_x - size_x/2.0F;
+    float x2 = coord_x + size_x/2.0F;
+    float y1 = coord_y - size_y/2.0F;
+    float y2 = coord_y + size_y/2.0F;
+    //TODO: fix this
+    float * hitbox = new float[12];
+    hitbox[0] = x1;
+    hitbox[1] = y1;
+    hitbox[2] = 0.0F;
+    hitbox[3] = x2;
+    hitbox[4] = y1;
+    hitbox[5] = 0.0F;
+    hitbox[6] = x2;
+    hitbox[7] = y2;
+    hitbox[8] = 0.0F;
+    hitbox[9] = x1;
+    hitbox[10] = y2;
+    hitbox[11] = 0.0F;
+    return hitbox;
+}
