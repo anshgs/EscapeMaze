@@ -8,12 +8,14 @@ class item {
 
 public:
     item();
-    item (std::string item_name, int energy_level);
+    item (std::string item_name, double speed_multiplier, bool invincible);
     void Add_energy();
 
 private:
     std::string item_name_;
-    int energy_level_;
+    double speed_multiplier_;
+    bool invincible_;
+    
 };
 
 

@@ -1,18 +1,18 @@
 #include "item.hpp"
 
-item::item() : item_name_("") , energy_level_(0) { //set the default energy item name to nothing and set the energy level to 0.
+item::item() : item_name_("") , speed_multiplier_(0) { //set the default energy item name to nothing and set the energy level to 0.
 
 }
 
-item::item(std::string item_name, int energy_level) : item_name_(item_name) , energy_level_(energy_level) { //constructor that sets the item name to the parameter's input name and the energy level to the parameter's energy level
+item::item(std::string item_name, double speed_multiplier, bool invincible) : item_name_(item_name) , speed_multiplier_(speed_multiplier), invincible_(invincible) { //constructor that sets the item name to the parameter's input name and the energy level to the parameter's energy level
 
 }
 
 void item::Add_energy() { //add energy to the user
     if (item_name_ == "Monster") {  ///Monster Drink
-        energy_level_ += 20;
+        speed_multiplier_ += 20;
     } else if (item_name_ == "Coffee") {  ///Coffee Drink
-        energy_level_ += 10;
+        speed_multiplier_ += 10;
     }
     
 }
