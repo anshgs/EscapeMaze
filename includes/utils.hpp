@@ -1,7 +1,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include <glfw/glfw3.h>
 #include <glad/glad.h>
 #include <vector>
 #include <set>
