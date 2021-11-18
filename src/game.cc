@@ -102,9 +102,9 @@ void Game::Play(Level &level, Maze &maze){
     int counter = 0;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
-        if(counter == 10){
-            refresh_rate_ = ((start_time - chrono::system_clock::now()).count())/10.0f;
-        }else if(counter < 10){
+        if(counter == 1000){
+            refresh_rate_ = 1000.0f/((chrono::system_clock::now() - start_time).count());
+        }else if(counter < 1000){
             counter++;
         }
         ProcessInputAndRegenerate(level, maze);
