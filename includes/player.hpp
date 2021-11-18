@@ -22,6 +22,7 @@ public:
     float GetSizeX();
     float GetSizeY();
     float* GetHitbox();
+    void UpdateSpeed(float refresh_rate_);
 
 };
 
