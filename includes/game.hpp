@@ -55,7 +55,7 @@ class Game {
         void Init();
         void GenerateNextLevel();
         void AddLevel(Level level);
-        
+        float refresh_rate_;
 
 };
 
