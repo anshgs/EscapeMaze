@@ -60,6 +60,7 @@ void Game::GenerateNextLevel(){
     if(cur_level_ >= levels_.size()){
         //TODO: Endgame handling
         cout << "End of Game" << endl;
+        cout << refresh_rate_ << endl;
         exit(EXIT_SUCCESS);
     }   
     level_over = false;
@@ -97,7 +98,15 @@ void Game::Play(Level &level, Maze &maze){
         BindElement(name);
     }
     
+    
+    int counter = 0;
+    chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
+        if(counter == 10){
+            refresh_rate_ = ((start_time - chrono::system_clock::now()).count())/10.0f;
+        }else if(counter < 10){
+            counter++;
+        }
         ProcessInputAndRegenerate(level, maze);
     }
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);

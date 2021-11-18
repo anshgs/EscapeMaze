@@ -40,7 +40,6 @@ const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"pl
 bool game_over = false;
 bool level_over = false;
 
-
 constexpr unsigned int kNumObjects = 3;
 
 unsigned int rectangle_ind[] = {
