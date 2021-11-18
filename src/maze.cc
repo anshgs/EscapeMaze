@@ -268,3 +268,7 @@ unsigned int* Maze::WallCoorIndex(size_t size){
     }
     return output;
 }
+
+std::vector<std::pair<int, const void*>> Maze::GetSizeData(){
+    return {{GetWallCoor().size()*48, WallCoorArray(GetWallCoor())},{GetWallCoor().size()*24, WallCoorIndex(GetWallCoor().size())}, {GetWallCoor().size()*6, (void*) 0}};
+}

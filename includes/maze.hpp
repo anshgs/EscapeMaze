@@ -4,6 +4,7 @@
 #include <vector>
 #include "locinfo.hpp"
 #include <set>
+#include <utility>
 class Maze { 
     public:
         Maze(int width, int height);
@@ -19,8 +20,8 @@ class Maze {
         // generate the coordinates of a wall; dim: num of bricks * 12(4*3)
         std::set<std::vector<float>> GetWallCoor();
         float* WallCoorArray(std::set<std::vector<float>> coor);
-        unsigned int* Maze::WallCoorIndex(size_t size);
-
+        unsigned int* WallCoorIndex(size_t size);
+        std::vector<std::pair<int, const void*>> GetSizeData();
 
 
     private:
