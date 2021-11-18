@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include <iostream>
 
 Player::Player(){
     
@@ -8,13 +9,15 @@ void Player::SetAttributes(float coord_x, float coord_y, float speed, float size
     coord_x_ = coord_x;
     coord_y_ = coord_y;
     speed_ = speed;
+    rawspeed_ = speed;
     size_x_ = size_x;
     size_y_ = size_y;
 }
 
 void Player::UpdateSpeed(float refresh_rate_){
-    if(refresh_rate_!=0)
-        speed_ = 0.000167/refresh_rate_ * speed_;
+    if(refresh_rate_!=0){
+        speed_ = 0.000167/refresh_rate_ * rawspeed_;
+    }
 }
 
 void Player::MoveUp() {

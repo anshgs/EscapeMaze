@@ -72,7 +72,6 @@ void Game::GenerateNextLevel(){
 }
 
 void Game::Play(Level &level, Maze &maze){
-    player_->UpdateSpeed(refresh_rate_);
     maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
 
 
@@ -105,11 +104,12 @@ void Game::Play(Level &level, Maze &maze){
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
         counter++;
-        if(counter == 1000){
-            refresh_rate_ = 1000.0f/((chrono::system_clock::now() - start_time).count());
-        }else if(counter < 1000){
+        if(counter == 100){
+            refresh_rate_ = 100.0f/((chrono::system_clock::now() - start_time).count());
+        }else if(counter < 100){
             refresh_rate_ = (1.0f*counter)/((chrono::system_clock::now() - start_time).count());
         }
+        player_->UpdateSpeed(refresh_rate_);
     }
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);
     glDeleteBuffers(kNumObjects, vertex_buffer_objects_);
