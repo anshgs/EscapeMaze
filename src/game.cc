@@ -56,6 +56,7 @@ void Game::InitializeWindow(){
 }
 
 void Game::GenerateNextLevel(){
+    level_over = false;
     if(cur_level_ >= levels_.size()){
         //TODO: Endgame handling
         cout << "End of Game" << endl;
@@ -180,6 +181,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     //Redo map
     if(level_over){
         start_time_ = chrono::system_clock::now();
+        GenerateNextLevel();
     }
     else{
         chrono::_V2::system_clock::time_point cur_time = chrono::system_clock::now();
