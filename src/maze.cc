@@ -276,6 +276,8 @@ std::vector<std::pair<int, const void*>> Maze::GetSizeData(){
 
 std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
     float range = 1.4f;
+    y = -y + 0.7;
+    x = x + 0.7;
     // the height of every brick 
     float b_height = 1.4f/height_;
     // first check horizontal --x
@@ -306,7 +308,8 @@ std::pair<float,float> Maze::CastCoor_Mtoo(int y, int x) {
     // vertical --y
     float y_center = (b_height + b_width)/2;
     float output_y = y * b_height + y_center - 0.7f;
-    std::pair<int,int> output = std::make_pair(output_y,output_x);
+    output_y = (-1) * output_y;
+    std::pair<float,float> output = std::make_pair(output_y,output_x);
     return output; 
 }
 
