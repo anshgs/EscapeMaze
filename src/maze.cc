@@ -264,7 +264,7 @@ unsigned int* Maze::WallCoorIndex(size_t size){
         output[pos+2] = 4*i+3;
         output[pos+3] = 4*i+1;
         output[pos+4] = 4*i+2;
-        output[pos+5] = 4*i+3;,
+        output[pos+5] = 4*i+3;
         pos+=6;
     }
     return output;
@@ -279,7 +279,6 @@ std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
     // the height of every brick 
     float b_height = 1.4f/height_;
     // the width of every brick
-    float b_width = 0.01f;
     // first check horizontal --x
     int mx = std::floor(x/b_height);
     // in the most right wall
@@ -304,10 +303,10 @@ std::pair<float,float> Maze::CastCoor_Mtoo(int y, int x) {
     float b_width = 0.01f;
     // horizontal --x
     float x_center = (b_height + b_width)/2;
-    float output_x = x * b_height + x_center - 0.7;
+    float output_x = x * b_height + x_center - 0.7f;
     // vertical --y
     float y_center = (b_height + b_width)/2;
-    float output_y = y * b_height + y_center - 0.7;
+    float output_y = y * b_height + y_center - 0.7f;
     std::pair<int,int> output = std::make_pair(output_y,output_x);
     return output; 
 }
@@ -316,3 +315,5 @@ std::pair<float,float> Maze::CastToCenter(float y, float x){
     std::pair<int,int> cell = CastCoor_Otom(y, x);
     return CastCoor_Mtoo(cell.first, cell.second);
 }
+
+// bool CheckWallOverlap(float y, float x) {}

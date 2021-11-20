@@ -28,6 +28,8 @@ class Maze {
         std::pair<float,float> CastCoor_Mtoo(int y, int x);
         // cast coordinates from (y,x) in OpenGl to the center of the closet cell. (still Opengl coor)
         std::pair<float,float> CastToCenter(float y, float x);
+        // check if (y,x) from openGl is in a wall false: not in a wall  true: in wall
+        // bool CheckWallOverlap(float y, float x);
 
 
     private:
