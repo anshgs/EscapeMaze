@@ -278,7 +278,6 @@ std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
     float range = 1.4f;
     // the height of every brick 
     float b_height = 1.4f/height_;
-    // the width of every brick
     // first check horizontal --x
     int mx = std::floor(x/b_height);
     // in the most right wall
@@ -316,4 +315,14 @@ std::pair<float,float> Maze::CastToCenter(float y, float x){
     return CastCoor_Mtoo(cell.first, cell.second);
 }
 
-// bool CheckWallOverlap(float y, float x) {}
+bool Maze::CheckWallOverlap(float y, float x) {
+    float b_height = 1.4f/height_;
+    float b_width = 0.01f;
+    // vertical wall
+    float mx = std::fmod(x, b_height);
+    int cell_x = floor(x/b_height);
+    float my = std::fmod(y,b_height);
+    int cell_y = floor(y/b_height);
+    // to do 
+    return false;
+}
