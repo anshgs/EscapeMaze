@@ -1,5 +1,5 @@
 #include "game.hpp"
-
+#include "maze.hpp"
 using namespace std;
 
 int main()
