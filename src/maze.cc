@@ -79,8 +79,8 @@ void Maze::GenerateMaze(int width, int height){
     // TODO: now the start point is set at the top left corner. May modify later
     std::stack<std::pair<int,int>> trace;
     // Choose the initial cell, mark it as visited and push it to the stack
-    std::pair <int,int> startpoint (0,0);  
-    mazedata_[0][0].visited = true;
+    std::pair <int,int> startpoint (width/2,height/2);  
+    mazedata_[width/2][height/2].visited = true;
     trace.push(startpoint);
     std::pair<int,int> cur;
     // While the stack is not empty
