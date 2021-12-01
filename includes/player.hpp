@@ -10,7 +10,7 @@ private:
     float speed_ = 0;
     float size_x_ = 0;
     float size_y_ = 0;
-    float rawspeed_ = 0;
+    float raw_speed_ = 0;
 public:
     Player();
     void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y);

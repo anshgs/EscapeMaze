@@ -99,15 +99,15 @@ void Game::Play(Level &level, Maze &maze){
     }
     
     
-    int counter = 0;
+    int frame_counter = 0;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
-        counter++;
-        if(counter == 100){
+        frame_counter++;
+        if(frame_counter == 100){
             refresh_rate_ = 100.0f/((chrono::system_clock::now() - start_time).count());
-        }else if(counter < 100){
-            refresh_rate_ = (1.0f*counter)/((chrono::system_clock::now() - start_time).count());
+        }else if(frame_counter < 100){
+            refresh_rate_ = (1.0f*frame_counter)/((chrono::system_clock::now() - start_time).count());
         }
         player_->UpdateSpeed(refresh_rate_);
     }
