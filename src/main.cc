@@ -12,7 +12,7 @@ int main()
     game->AddLevel(level);
     //game->AddLevel(level2);
     //game->AddLevel(level3);
-    game->AddLevel(level4);
+    // game->AddLevel(level4);
     game->Init();
     game->GenerateNextLevel();
     return 0;
