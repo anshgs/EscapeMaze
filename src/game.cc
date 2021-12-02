@@ -31,8 +31,8 @@ void Game::Init(){
 void Game::InitializeWindow(){
     // glfw: initialize and configure
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     #ifdef __APPLE__
@@ -63,7 +63,6 @@ void Game::GenerateNextLevel(){
         cout << refresh_rate_ << endl;
         exit(EXIT_SUCCESS);
     }   
-    level_over = false;
     Level next_level = levels_.at(cur_level_++);
     num_items_ = next_level.num_items_; //update the number of items
     for (int i = 0 ; i < num_items_ ; i++) {
@@ -79,7 +78,6 @@ void Game::GenerateNextLevel(){
 
 void Game::Play(Level &level, Maze &maze){
     maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
-
 
     glGenBuffers(kNumObjects, element_buffer_objects_);
     glGenVertexArrays(kNumObjects, vertex_array_objects_);
@@ -97,34 +95,28 @@ void Game::Play(Level &level, Maze &maze){
         player_hitbox[i] = fetched_player_hitbox[i];
         win_tile_hitbox[i] = fetched_win_tile_hitbox[i];
     }
-    float* items_array_ = new float[num_items_*12];
-    int pos = 0;
+    float *items_array_ = new float[num_items_*12];
     
-    for (Item i : items_) {
+    for (int x = 0; x < num_items_; x++) {
+        Item i = items_[x];
         float* cur = i.GetHitbox();
-        float x1 = cur[0];
-        float x2 = cur[1];
-        float y1 = cur[2];
-        float y2 = cur[3];
-        items_array_[pos]=x1;
-        items_array_[pos+1]=y1;
-        items_array_[pos+2]=0.0f;
-        items_array_[pos+3]=x2;
-        items_array_[pos+4]=y1;
-        items_array_[pos+5]=0.0f;
-        items_array_[pos+6]=x2;
-        items_array_[pos+7]=y2;
-        items_array_[pos+8]=0.0f;
-        items_array_[pos+9]=x1;
-        items_array_[pos+10]=y2;
-        items_array_[pos+11]=0.0f;
-        pos+=12;
-       
+        int pos = x*12;
+        items_array_[pos]=cur[pos];
+        items_array_[pos+1]=cur[pos+1];
+        items_array_[pos+2]=cur[pos+2];
+        items_array_[pos+3]=cur[pos+3];
+        items_array_[pos+4]=cur[pos+4];
+        items_array_[pos+5]=cur[pos+5];
+        items_array_[pos+6]=cur[pos+6];
+        items_array_[pos+7]=cur[pos+7];
+        items_array_[pos+8]=cur[pos+8];
+        items_array_[pos+9]=cur[pos+9];
+        items_array_[pos+10]=cur[pos+10];
+        items_array_[pos+11]=cur[pos+11];
     }
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
-
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
     for (string name : kNames) {
         BindElement(name);
@@ -134,14 +126,12 @@ void Game::Play(Level &level, Maze &maze){
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
-        frame_counter++;
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
-        if(frame_counter == 100){
-            refresh_rate_ = 100.0f/(telapsed.count());
-        }else if(frame_counter < 100){
+        if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
+            player_->UpdateSpeed(refresh_rate_);
+            frame_counter++;
         }
-        player_->UpdateSpeed(refresh_rate_);
     }
     // int frame_counter = 0;
     // chrono::system_clock::time_point start_time = chrono::system_clock::now();
@@ -262,24 +252,19 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     
     for (Item i : items_) {
         float* cur = i.GetHitbox();
-        float x1 = cur[0];
-        float x2 = cur[1];
-        float y1 = cur[2];
-        float y2 = cur[3];
-        items_array_[pos]=x1;
-        items_array_[pos+1]=y1;
-        items_array_[pos+2]=0.0f;
-        items_array_[pos+3]=x2;
-        items_array_[pos+4]=y1;
-        items_array_[pos+5]=0.0f;
-        items_array_[pos+6]=x2;
-        items_array_[pos+7]=y2;
-        items_array_[pos+8]=0.0f;
-        items_array_[pos+9]=x1;
-        items_array_[pos+10]=y2;
-        items_array_[pos+11]=0.0f;
+        items_array_[pos]=cur[pos];
+        items_array_[pos+1]=cur[pos+1];
+        items_array_[pos+2]=cur[pos+2];
+        items_array_[pos+3]=cur[pos+3];
+        items_array_[pos+4]=cur[pos+4];
+        items_array_[pos+5]=cur[pos+5];
+        items_array_[pos+6]=cur[pos+6];
+        items_array_[pos+7]=cur[pos+7];
+        items_array_[pos+8]=cur[pos+8];
+        items_array_[pos+9]=cur[pos+9];
+        items_array_[pos+10]=cur[pos+10];
+        items_array_[pos+11]=cur[pos+11];
         pos+=12;
-       
     }
 
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
