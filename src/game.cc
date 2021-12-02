@@ -101,18 +101,18 @@ void Game::Play(Level &level, Maze &maze){
         Item i = items_[x];
         float* cur = i.GetHitbox();
         int pos = x*12;
-        items_array_[pos]=cur[pos];
-        items_array_[pos+1]=cur[pos+1];
-        items_array_[pos+2]=cur[pos+2];
-        items_array_[pos+3]=cur[pos+3];
-        items_array_[pos+4]=cur[pos+4];
-        items_array_[pos+5]=cur[pos+5];
-        items_array_[pos+6]=cur[pos+6];
-        items_array_[pos+7]=cur[pos+7];
-        items_array_[pos+8]=cur[pos+8];
-        items_array_[pos+9]=cur[pos+9];
-        items_array_[pos+10]=cur[pos+10];
-        items_array_[pos+11]=cur[pos+11];
+        items_array_[pos]=cur[0];
+        items_array_[pos+1]=cur[1];
+        items_array_[pos+2]=cur[2];
+        items_array_[pos+3]=cur[3];
+        items_array_[pos+4]=cur[4];
+        items_array_[pos+5]=cur[5];
+        items_array_[pos+6]=cur[6];
+        items_array_[pos+7]=cur[7];
+        items_array_[pos+8]=cur[8];
+        items_array_[pos+9]=cur[9];
+        items_array_[pos+10]=cur[10];
+        items_array_[pos+11]=cur[11];
     }
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
@@ -252,18 +252,18 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     
     for (Item i : items_) {
         float* cur = i.GetHitbox();
-        items_array_[pos]=cur[pos];
-        items_array_[pos+1]=cur[pos+1];
-        items_array_[pos+2]=cur[pos+2];
-        items_array_[pos+3]=cur[pos+3];
-        items_array_[pos+4]=cur[pos+4];
-        items_array_[pos+5]=cur[pos+5];
-        items_array_[pos+6]=cur[pos+6];
-        items_array_[pos+7]=cur[pos+7];
-        items_array_[pos+8]=cur[pos+8];
-        items_array_[pos+9]=cur[pos+9];
-        items_array_[pos+10]=cur[pos+10];
-        items_array_[pos+11]=cur[pos+11];
+        items_array_[pos]=cur[0];
+        items_array_[pos+1]=cur[1];
+        items_array_[pos+2]=cur[2];
+        items_array_[pos+3]=cur[3];
+        items_array_[pos+4]=cur[4];
+        items_array_[pos+5]=cur[5];
+        items_array_[pos+6]=cur[6];
+        items_array_[pos+7]=cur[7];
+        items_array_[pos+8]=cur[8];
+        items_array_[pos+9]=cur[9];
+        items_array_[pos+10]=cur[10];
+        items_array_[pos+11]=cur[11];
         pos+=12;
     }
 
