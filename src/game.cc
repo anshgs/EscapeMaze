@@ -31,8 +31,8 @@ void Game::Init(){
 void Game::InitializeWindow(){
     // glfw: initialize and configure
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     #ifdef __APPLE__
@@ -65,6 +65,7 @@ void Game::GenerateNextLevel(){
     }   
     Level next_level = levels_.at(cur_level_++);
     num_items_ = next_level.num_items_; //update the number of items
+    items_.clear();
     for (int i = 0 ; i < num_items_ ; i++) {
         Item new_item;
         new_item.SetRandomAttributes();
@@ -82,11 +83,12 @@ void Game::Play(Level &level, Maze &maze){
     glGenBuffers(kNumObjects, element_buffer_objects_);
     glGenVertexArrays(kNumObjects, vertex_array_objects_);
     glGenBuffers(kNumObjects, vertex_buffer_objects_);
-    
+    cout << " reached 1" << endl;
     map<string, vector<pair<int, const void*>>> name_to_size_data;
     for (string name : kNames) {
         name_to_size_data_[name] = vector<pair<int, const void*>>();
     }
+    cout << " reached 2" << endl;
     float * fetched_player_hitbox = player_->GetHitbox();
     float * fetched_win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
     float player_hitbox[12];
@@ -96,7 +98,7 @@ void Game::Play(Level &level, Maze &maze){
         win_tile_hitbox[i] = fetched_win_tile_hitbox[i];
     }
     float *items_array_ = new float[num_items_*12];
-    
+    cout << " reached 3" << endl;
     for (int x = 0; x < num_items_; x++) {
         Item i = items_[x];
         float* cur = i.GetHitbox();
@@ -121,11 +123,12 @@ void Game::Play(Level &level, Maze &maze){
     for (string name : kNames) {
         BindElement(name);
     }
-    
+    cout << " reached 4" << endl;
     int frame_counter = 0;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
+        cout << " 1 " << endl;
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
@@ -146,13 +149,14 @@ void Game::Play(Level &level, Maze &maze){
     //     }
     //     player_->UpdateSpeed(refresh_rate_);
     // }
+    cout << " reached 5" << endl;
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);
     glDeleteBuffers(kNumObjects, vertex_buffer_objects_);
     glDeleteBuffers(kNumObjects, element_buffer_objects_);
     for(const auto& name_program_pair : programs_){    
         glDeleteProgram(name_program_pair.second);
     }
-
+    cout << " reached 6" << endl;
     glfwTerminate();
 }
 
@@ -220,7 +224,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
 }
 
 void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
-    
+    cout << "r1" <<endl;
     // render
     // ------
     glClear(GL_COLOR_BUFFER_BIT);
@@ -228,9 +232,11 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     //Redo map
     if(level_over){
         start_time_ = chrono::system_clock::now();
+        cout << "r2" <<endl;
         GenerateNextLevel();
     }
     else{
+        cout << "r3" <<endl;
         chrono::system_clock::time_point cur_time = chrono::system_clock::now();
         chrono::duration<double> elapsed = cur_time - start_time_;
         if(elapsed.count() > level.regen_time_interval){
@@ -239,6 +245,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
             name_to_size_data_["walls"] = maze.GetSizeData();
             BindElement("walls");
         }
+        cout << "r4" <<endl;
         float * fetched_player_hitbox = player_->GetHitbox();
         float player_hitbox[12];
         for(int i = 0; i < 12; i++){
@@ -246,7 +253,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
         }
         name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
         BindElement("player");
-
+        cout << "r5" <<endl;       
         float* items_array_ = new float[num_items_*12];
         int pos = 0;
     
@@ -266,7 +273,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
         items_array_[pos+11]=cur[11];
         pos+=12;
     }
-
+        cout << "r6" <<endl;
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
     BindElement("items");
         for(string name : kNames){
@@ -277,6 +284,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
     ProcessInput(level, maze);
     glfwSwapBuffers(game_window_);
     glfwPollEvents();
+            cout << "r7" <<endl;
 }
 
 map<string, unsigned int> Game::BuildShaders(const char* vertex_source, vector<const char*> fragment_sources, vector<string> fragment_names){

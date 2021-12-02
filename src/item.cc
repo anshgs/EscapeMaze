@@ -1,4 +1,6 @@
 #include "item.hpp"
+#include <utility>
+#include "maze.hpp"
 
 void Item::SetRandomAttributes() { //add energy to the user
     int idx = rand()%possible_items_.size(); //random idx number generator from 0 to 2
@@ -6,6 +8,8 @@ void Item::SetRandomAttributes() { //add energy to the user
     
     coord_x_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
     coord_y_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
+    
+    
 
     if (item_name_ == "Monster") {  ///Monster Drink goes here
         speed_multiplier_ = 2.5f;
