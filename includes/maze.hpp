@@ -7,6 +7,7 @@
 #include <utility>
 class Maze { 
     public:
+        Maze();
         Maze(int width, int height);
         int GetWidth();
         int GetHeight();

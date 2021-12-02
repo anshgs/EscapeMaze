@@ -53,3 +53,58 @@ float* GetHitbox(pair<float, float> center, float size_x, float size_y){
     hitbox[11] = 0.0F;
     return hitbox;
 }
+
+float* CoorArray(set<vector<float>> coor) {
+    float *output = new float[coor.size() * 4 * 3];
+    set<vector<float>>::iterator wIt = coor.begin();
+    int pos = 0;
+    while(wIt != coor.end()) {
+        vector<float> cur = (*wIt);
+        float x1 = cur[0];
+        float x2 = cur[1];
+        float y1 = cur[2];
+        float y2 = cur[3];
+        output[pos]=x1;
+        output[pos+1]=y1;
+        output[pos+2]=0.0f;
+        output[pos+3]=x2;
+        output[pos+4]=y1;
+        output[pos+5]=0.0f;
+        output[pos+6]=x2;
+        output[pos+7]=y2;
+        output[pos+8]=0.0f;
+        output[pos+9]=x1;
+        output[pos+10]=y2;
+        output[pos+11]=0.0f;
+        pos+=12;
+        wIt++;
+    }
+    return output;
+}
+
+float* CoorArray(vector<float*> coor) {
+    float *output = new float[coor.size() * 4 * 3];
+    int pos = 0;
+    for(float* cur : coor) {
+        for(int i = 0; i < 12; i++){
+            output[pos+i] = cur[i];
+        }
+        pos+=12;
+    }
+    return output;
+}
+
+unsigned int* CoorIndex(size_t size){
+    unsigned int* output = new unsigned int[size*6];
+    int pos = 0;
+    for(size_t i = 0; i< size; i++){
+        output[pos] = 4*i;
+        output[pos+1] = 4*i+1;
+        output[pos+2] = 4*i+3;
+        output[pos+3] = 4*i+1;
+        output[pos+4] = 4*i+2;
+        output[pos+5] = 4*i+3;
+        pos+=6;
+    }
+    return output;
+}

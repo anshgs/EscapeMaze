@@ -10,6 +10,7 @@ struct Locinfo{
     bool down;
     // use in map generation for reducing time complexity of vector search
     bool visited;
+    bool visited_by_ai;
     // todo: add constructor;
 };
 

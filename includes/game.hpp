@@ -2,9 +2,8 @@
 #define GAME_HPP
 
 #include "utils.hpp"
-#include "maze.hpp"
 #include "player.hpp"
-
+#include "ai.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -16,7 +15,10 @@ struct Level{
     const float player_width_;
     const float player_height_;
     const int num_ai_;
+    const vector<pair<float, float>> ai_start_coords_;
     const float ai_speed_;
+    const float ai_width_;
+    const float ai_height_;
     const int maze_height_;
     const int maze_width_;
     const pair<float, float> start_coord_;
@@ -29,6 +31,7 @@ class Game {
     private:
         int cur_level_ = 0;
         vector<Level> levels_;
+        vector<Ai> ai_;
         Player* player_;
         GLFWwindow* game_window_;
         unsigned int * element_buffer_objects_;
@@ -51,6 +54,7 @@ class Game {
         void BindElement(string object_name);
         void Play(Level &level, Maze &maze);
         void ProcessInputAndRegenerate(Level &level, Maze &maze);
+        std::vector<std::pair<int, const void*>> GetAiSizeData();
     public:
         void Init();
         void GenerateNextLevel();

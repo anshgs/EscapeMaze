@@ -63,10 +63,19 @@ void Game::GenerateNextLevel(){
         cout << refresh_rate_ << endl;
         exit(EXIT_SUCCESS);
     }   
-    level_over = false;
     Level next_level = levels_.at(cur_level_++);
     player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
+    if(next_level.num_ai_ > 0){    
+        for(int i = 0; i < next_level.num_ai_; i++){
+            Ai ai;
+            ai.SetAttributes(next_level.ai_start_coords_[i].first, next_level.ai_start_coords_[i].second, next_level.ai_speed_, next_level.ai_width_, next_level.ai_height_); 
+            ai_.push_back(ai);
+        }
+    }
     Maze maze(next_level.maze_width_, next_level.maze_height_);
+    for(Ai ai : ai_){
+        ai.ScanMaze(maze);
+    }
     start_time_ = chrono::system_clock::now();
     Play(next_level, maze);
 }
@@ -94,6 +103,7 @@ void Game::Play(Level &level, Maze &maze){
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
+    name_to_size_data_["ai"] = GetAiSizeData();
     for (string name : kNames) {
         BindElement(name);
     }
@@ -110,6 +120,9 @@ void Game::Play(Level &level, Maze &maze){
             refresh_rate_ = (1.0f*frame_counter)/((chrono::system_clock::now() - start_time).count());
         }
         player_->UpdateSpeed(refresh_rate_);
+        for(Ai ai : ai_){
+            ai.UpdateSpeed(refresh_rate_);
+        }
     }
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);
     glDeleteBuffers(kNumObjects, vertex_buffer_objects_);
@@ -119,6 +132,14 @@ void Game::Play(Level &level, Maze &maze){
     }
 
     glfwTerminate();
+}
+
+vector<pair<int, const void*>> Game::GetAiSizeData(){
+    vector<float*> ai_coords_v;
+    for(int i = 0; i < ai_.size(); i++){
+        ai_coords_v.push_back(ai_[i].GetHitbox());
+    }
+    return {{ai_coords_v.size()*48, CoorArray(ai_coords_v)},{ai_coords_v.size()*24, CoorIndex(ai_coords_v.size())}, {ai_coords_v.size()*6, (void*) 0}};
 }
 
 void Game::Draw(string object_name){
@@ -162,7 +183,9 @@ void Game::ProcessInput(Level &level, Maze &maze){
 
     if(!level_over){
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
+            cout << "pressed" << endl;
             if(player_current_coords[3]+inc <= 1 && !CollideWalls(player_current_coords, walls, inc, 0)){
+                cout << "asd" << endl;
                 player_->MoveRight();
             }
         }
@@ -204,6 +227,12 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
             name_to_size_data_["walls"] = maze.GetSizeData();
             BindElement("walls");
         }
+
+        for(Ai ai : ai_){
+            ai.Seek(player_->GetCenterYX());
+        }
+        name_to_size_data_["ai"] = GetAiSizeData();
+        BindElement("ai");
         float * fetched_player_hitbox = player_->GetHitbox();
         float player_hitbox[12];
         for(int i = 0; i < 12; i++){

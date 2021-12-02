@@ -17,7 +17,7 @@ void Player::SetAttributes(float coord_x, float coord_y, float speed, float size
 
 void Player::UpdateSpeed(float refresh_rate_){
     if(refresh_rate_!=0){
-        speed_ = 0.000167/refresh_rate_ * raw_speed_;
+        //speed_ = 0.000167/refresh_rate_ * raw_speed_;
     }
 }
 
@@ -46,6 +46,10 @@ float Player::GetSizeY(){
 
 float Player::GetSpeed(){
     return speed_;
+}
+
+pair<float, float> Player::GetCenterYX(){
+    return {coord_y_, coord_x_};
 }
 
 float * Player::GetHitbox(){

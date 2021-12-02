@@ -1,6 +1,10 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+
+#include<utility>
+
+using namespace std;
 class Player {
 
 private:
@@ -22,6 +26,7 @@ public:
     float GetSizeX();
     float GetSizeY();
     float* GetHitbox();
+    pair<float, float> GetCenterYX();
     void UpdateSpeed(float refresh_rate_);
 
 };
