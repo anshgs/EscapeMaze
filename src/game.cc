@@ -65,6 +65,12 @@ void Game::GenerateNextLevel(){
     }   
     level_over = false;
     Level next_level = levels_.at(cur_level_++);
+    num_items_ = next_level.num_items_; //update the number of items
+    for (int i = 0 ; i < num_items_ ; i++) {
+        Item new_item;
+        new_item.SetRandomAttributes();
+        items_.push_back(new_item);
+    }
     player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
     Maze maze(next_level.maze_width_, next_level.maze_height_);
     start_time_ = chrono::system_clock::now();
@@ -91,9 +97,34 @@ void Game::Play(Level &level, Maze &maze){
         player_hitbox[i] = fetched_player_hitbox[i];
         win_tile_hitbox[i] = fetched_win_tile_hitbox[i];
     }
+    float* items_array_ = new float[num_items_*12];
+    int pos = 0;
+    
+    for (Item i : items_) {
+        float* cur = i.GetHitbox();
+        float x1 = cur[0];
+        float x2 = cur[1];
+        float y1 = cur[2];
+        float y2 = cur[3];
+        items_array_[pos]=x1;
+        items_array_[pos+1]=y1;
+        items_array_[pos+2]=0.0f;
+        items_array_[pos+3]=x2;
+        items_array_[pos+4]=y1;
+        items_array_[pos+5]=0.0f;
+        items_array_[pos+6]=x2;
+        items_array_[pos+7]=y2;
+        items_array_[pos+8]=0.0f;
+        items_array_[pos+9]=x1;
+        items_array_[pos+10]=y2;
+        items_array_[pos+11]=0.0f;
+        pos+=12;
+       
+    }
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
+    name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
     for (string name : kNames) {
         BindElement(name);
     }

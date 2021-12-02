@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "maze.hpp"
 #include "player.hpp"
+#include "item.hpp"
 
 
 #include <iostream>
@@ -22,12 +23,14 @@ struct Level{
     const pair<float, float> start_coord_;
     const pair<float, float> win_coord_; 
     const float regen_time_interval;
+    const int num_items_;
 };
 class Game { 
     
 
     private:
         int cur_level_ = 0;
+        int num_items_ = 0;
         vector<Level> levels_;
         Player* player_;
         GLFWwindow* game_window_;
@@ -56,6 +59,7 @@ class Game {
         void GenerateNextLevel();
         void AddLevel(Level level);
         float refresh_rate_;
+        std::vector<Item> items_;
 
 };
 

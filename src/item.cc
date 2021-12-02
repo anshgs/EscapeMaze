@@ -1,7 +1,5 @@
 #include "item.hpp"
 
-
-
 void Item::SetRandomAttributes() { //add energy to the user
     int idx = rand()%possible_items_.size(); //random idx number generator from 0 to 2
     item_name_ = possible_items_.at(idx);
