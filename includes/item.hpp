@@ -9,11 +9,11 @@ using namespace std;
 class Item {
 
 private:
-    float coord_x_ = 0;
-    float coord_y_ = 0;
-    float coord_z_ = 0;
-    float size_x_ = 0;
-    float size_y_ = 0;
+    float coord_x_ = 0.0F;
+    float coord_y_ = 0.0F;
+    float coord_z_ = 0.0F;
+    float size_x_ = 0.02F;
+    float size_y_ = 0.02F;
     string item_name_;
     float speed_multiplier_;
     bool invincible_;

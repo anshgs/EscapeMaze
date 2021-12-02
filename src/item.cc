@@ -20,6 +20,7 @@ void Item::SetRandomAttributes() { //add energy to the user
         size_x_ = 0.01f;
         size_y_ = 0.01f;
     }
+
     
 }
 

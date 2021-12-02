@@ -124,24 +124,38 @@ void Game::Play(Level &level, Maze &maze){
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
+
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
     for (string name : kNames) {
         BindElement(name);
     }
-    
     
     int frame_counter = 0;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
         frame_counter++;
+        chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter == 100){
-            refresh_rate_ = 100.0f/((chrono::system_clock::now() - start_time).count());
+            refresh_rate_ = 100.0f/(telapsed.count());
         }else if(frame_counter < 100){
-            refresh_rate_ = (1.0f*frame_counter)/((chrono::system_clock::now() - start_time).count());
+            refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
         }
         player_->UpdateSpeed(refresh_rate_);
     }
+    // int frame_counter = 0;
+    // chrono::system_clock::time_point start_time = chrono::system_clock::now();
+    // while(!glfwWindowShouldClose(game_window_)){
+    //     ProcessInputAndRegenerate(level, maze);
+    //     frame_counter++;
+
+    //     if(frame_counter == 100){
+    //         refresh_rate_ = 100.0f/((chrono::system_clock::now() - start_time).count());
+    //     }else if(frame_counter < 100){
+    //         refresh_rate_ = (1.0f*frame_counter)/((chrono::system_clock::now() - start_time).count());
+    //     }
+    //     player_->UpdateSpeed(refresh_rate_);
+    // }
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);
     glDeleteBuffers(kNumObjects, vertex_buffer_objects_);
     glDeleteBuffers(kNumObjects, element_buffer_objects_);
@@ -242,11 +256,39 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){
         }
         name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
         BindElement("player");
-        
+
+        float* items_array_ = new float[num_items_*12];
+        int pos = 0;
+    
+    for (Item i : items_) {
+        float* cur = i.GetHitbox();
+        float x1 = cur[0];
+        float x2 = cur[1];
+        float y1 = cur[2];
+        float y2 = cur[3];
+        items_array_[pos]=x1;
+        items_array_[pos+1]=y1;
+        items_array_[pos+2]=0.0f;
+        items_array_[pos+3]=x2;
+        items_array_[pos+4]=y1;
+        items_array_[pos+5]=0.0f;
+        items_array_[pos+6]=x2;
+        items_array_[pos+7]=y2;
+        items_array_[pos+8]=0.0f;
+        items_array_[pos+9]=x1;
+        items_array_[pos+10]=y2;
+        items_array_[pos+11]=0.0f;
+        pos+=12;
+       
+    }
+
+    name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
+    BindElement("items");
         for(string name : kNames){
             Draw(name);
         }
     }
+    
     ProcessInput(level, maze);
     glfwSwapBuffers(game_window_);
     glfwPollEvents();

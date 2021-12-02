@@ -17,7 +17,8 @@ void Player::SetAttributes(float coord_x, float coord_y, float speed, float size
 
 void Player::UpdateSpeed(float refresh_rate_){
     if(refresh_rate_!=0){
-        speed_ = 0.000167/refresh_rate_ * raw_speed_;
+        speed_ = refresh_rate_ * raw_speed_;
+        //std::cout << refresh_rate_ << " " << speed_ << std::endl;
     }
 }
 
