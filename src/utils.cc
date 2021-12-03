@@ -54,7 +54,7 @@ float* GetHitbox(pair<float, float> center, float size_x, float size_y){
     return hitbox;
 }
 
-std::pair<int,int> CastCoor_Otom(float y, float x, int height_){
+std::pair<int,int> CastCoor_Otom(float x, float y, int height_){
     float range = 1.4f;
     y = -y + 0.7;
     x = x + 0.7;
@@ -72,11 +72,11 @@ std::pair<int,int> CastCoor_Otom(float y, float x, int height_){
     if(my == height_) {
         my = my -1;
     }
-    std::pair<int,int> output = std::make_pair(my,mx);
+    std::pair<int,int> output = std::make_pair(mx,my);
     return output; 
 }
 
-std::pair<float,float> CastCoor_Mtoo(int y, int x, int height_) {
+std::pair<float,float> CastCoor_Mtoo(int x, int y, int height_) {
     float range = 1.4f;
     // the height of every brick 
     float b_height = 1.4f/height_;
@@ -89,11 +89,11 @@ std::pair<float,float> CastCoor_Mtoo(int y, int x, int height_) {
     float y_center = (b_height + b_width)/2;
     float output_y = y * b_height + y_center - 0.7f;
     output_y = (-1) * output_y;
-    std::pair<float,float> output = std::make_pair(output_y,output_x);
+    std::pair<float,float> output = std::make_pair(output_x,output_y);
     return output; 
 }
 
-std::pair<float,float> CastToCenter(float y, float x, int height_){
-    std::pair<int,int> cell = CastCoor_Otom(y, x, height_);
+std::pair<float,float> CastToCenter(float x, float y, int height_){
+    std::pair<int,int> cell = CastCoor_Otom(x, y, height_);
     return CastCoor_Mtoo(cell.first, cell.second, height_);
 }

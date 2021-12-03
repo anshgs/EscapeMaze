@@ -23,11 +23,11 @@ class Maze {
         unsigned int* WallCoorIndex(size_t size);
         std::vector<std::pair<int, const void*>> GetSizeData();
         // cast coordinates from (y,x) in OpenGl to (y,x) in the maze double vector
-        std::pair<int,int> CastCoor_Otom(float y, float x);
+        std::pair<int,int> CastCoor_Otom(float x, float y);
         // from (y,x) in maze vector --->  center of the cell nin Opengl coordinate
-        std::pair<float,float> CastCoor_Mtoo(int y, int x);
+        std::pair<float,float> CastCoor_Mtoo(int x, int y);
         // cast coordinates from (y,x) in OpenGl to the center of the closet cell. (still Opengl coor)
-        std::pair<float,float> CastToCenter(float y, float x);
+        std::pair<float,float> CastToCenter(float x, float y);
         // check if (y,x) from openGl is in a wall false: not in a wall  true: in wall
         bool CheckWallOverlap(float y, float x);
 

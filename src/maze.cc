@@ -274,7 +274,7 @@ std::vector<std::pair<int, const void*>> Maze::GetSizeData(){
     return {{GetWallCoor().size()*48, WallCoorArray(GetWallCoor())},{GetWallCoor().size()*24, WallCoorIndex(GetWallCoor().size())}, {GetWallCoor().size()*6, (void*) 0}};
 }
 
-std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
+std::pair<int,int> Maze::CastCoor_Otom(float x, float y){
     float range = 1.4f;
     y = -y + 0.7;
     x = x + 0.7;
@@ -292,11 +292,11 @@ std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
     if(my == height_) {
         my = my -1;
     }
-    std::pair<int,int> output = std::make_pair(my,mx);
+    std::pair<int,int> output = std::make_pair(mx,my);
     return output; 
 }
 
-std::pair<float,float> Maze::CastCoor_Mtoo(int y, int x) {
+std::pair<float,float> Maze::CastCoor_Mtoo(int x, int y) {
     float range = 1.4f;
     // the height of every brick 
     float b_height = 1.4f/height_;
@@ -309,12 +309,12 @@ std::pair<float,float> Maze::CastCoor_Mtoo(int y, int x) {
     float y_center = (b_height + b_width)/2;
     float output_y = y * b_height + y_center - 0.7f;
     output_y = (-1) * output_y;
-    std::pair<float,float> output = std::make_pair(output_y,output_x);
+    std::pair<float,float> output = std::make_pair(output_x,output_y);
     return output; 
 }
 
-std::pair<float,float> Maze::CastToCenter(float y, float x){
-    std::pair<int,int> cell = CastCoor_Otom(y, x);
+std::pair<float,float> Maze::CastToCenter(float x, float y){
+    std::pair<int,int> cell = CastCoor_Otom(x, y);
     return CastCoor_Mtoo(cell.first, cell.second);
 }
 
