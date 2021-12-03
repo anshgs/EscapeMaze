@@ -29,16 +29,21 @@ class Game {
     
 
     private:
-        int cur_level_ = 0;
+        size_t cur_level_ = 0;
         int num_items_ = 0;
         vector<Level> levels_;
         Player* player_;
         GLFWwindow* game_window_;
+        bool invincible = false;
+        bool spedUp = false;
+        bool jchanged;
         unsigned int * element_buffer_objects_;
         unsigned int * vertex_array_objects_;
         unsigned int * vertex_buffer_objects_;
         map<string, vector<pair<int, const void*>>> name_to_size_data_;
         chrono::system_clock::time_point start_time_;
+        chrono::system_clock::time_point speed_start_time_;
+        chrono::system_clock::time_point invincible_start_time_;
         map<string, unsigned int> programs_;
 
         void Config();

@@ -16,10 +16,10 @@ private:
     float size_y_ = 0.02F;
     int mSize = 1;
     string item_name_;
-    float speed_multiplier_;
+    bool speed_boost_ = false;
     bool invincible_ = false;
     bool teleport_ = false;
-    vector<string> possible_items_ = {"Monster" , "Coffee" , "Water", "Invincible", "Teleport"};
+    vector<string> possible_items_ = {"SpeedBoost" , "Invincible", "Teleport"};
 
 public:
     
@@ -28,7 +28,7 @@ public:
     float* GetHitbox();
     vector<float> GetCorners();
     void SetRandomAttributes(int h);
-    float GetSpeedMultiplier();
+    bool GetSpeedBoost();
     bool GetInvincible();
     bool GetTeleport();
     

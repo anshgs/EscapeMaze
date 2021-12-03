@@ -15,23 +15,18 @@ void Item::SetRandomAttributes(int h) { //add energy to the user
     coord_x_ = tx;
     coord_y_ = ty;
 
-    if (item_name_ == "Monster") {  ///Monster Drink goes here
-        speed_multiplier_ = 2.5f;
-        size_x_ = 0.025f;
-        size_y_ = 0.025f;
-    } else if (item_name_ == "Coffee") {  ///Coffee Drink
-        speed_multiplier_ = 2.0f;
-        size_x_ = 0.015f;
-        size_y_ = 0.015f;
-    } else if (item_name_ == "Water") {  ///Coffee Drink
-        speed_multiplier_ = 1.5f;
+    if (item_name_ == "SpeedBoost") {  
         size_x_ = 0.01f;
         size_y_ = 0.01f;
+        speed_boost_ = true;
     } else if (item_name_ == "Teleport"){
-        speed_multiplier_ = 1.0f;
         size_x_ = 0.005f;
         size_y_ = 0.02f;
         teleport_ = true;
+    } else if (item_name_ == "Invincible"){
+        size_x_ = 0.03f;
+        size_y_ = 0.005f;
+        invincible_ = true;
     }
 
     
@@ -80,8 +75,8 @@ vector<float> Item::GetCorners(){
     return hitbox;
 }
 
-float Item::GetSpeedMultiplier() {
-    return speed_multiplier_;
+bool Item::GetSpeedBoost() {
+    return speed_boost_;
 }
     
 bool Item::GetInvincible() {
