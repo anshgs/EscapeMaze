@@ -17,17 +17,20 @@ private:
     int mSize = 1;
     string item_name_;
     float speed_multiplier_;
-    bool invincible_;
-    vector<string> possible_items_ = {"Monster" , "Coffee" , "Water"};
+    bool invincible_ = false;
+    bool teleport_ = false;
+    vector<string> possible_items_ = {"Monster" , "Coffee" , "Water", "Invincible", "Teleport"};
 
 public:
     
     float GetSizeX();
     float GetSizeY();
     float* GetHitbox();
+    vector<float> GetCorners();
     void SetRandomAttributes(int h);
     float GetSpeedMultiplier();
     bool GetInvincible();
+    bool GetTeleport();
     
     
 };

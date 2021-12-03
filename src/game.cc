@@ -181,6 +181,23 @@ void Game::ProcessInput(Level &level, Maze &maze){
     win_tile_coords.push_back(win_tile_hitbox[1]);
     win_tile_coords.push_back(win_tile_hitbox[10]);
 
+    for(int i = 0; i<num_items_; i++){
+        if(CollideOnMove(player_current_coords, items_[i].GetCorners(), 0, 0)){
+            if(items_[i].GetTeleport()){
+                float coord_x_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
+                float coord_y_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
+                float tx = CastToCenter(coord_x_, coord_y_, maze.GetHeight()).first;
+                float ty = CastToCenter(coord_x_, coord_y_, maze.GetHeight()).second;
+                player_->SetXCoord(tx);
+                player_->SetYCoord(ty);
+            }
+            player_->SetSpeed(player_->GetSpeed()*items_[i].GetSpeedMultiplier());
+            items_.erase(items_.begin() + i);
+            i--;
+            num_items_--;
+        }
+    }
+
     if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
         float c1 = (rand()%10)/10.0f;
         float c2 = (rand()%10)/10.0f;
@@ -196,6 +213,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
 
     if(!level_over){
+
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && !CollideWalls(player_current_coords, walls, inc, 0)){
                 player_->MoveRight();
