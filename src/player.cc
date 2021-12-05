@@ -30,7 +30,6 @@ void Player::SetYCoord(float coord_y){
 void Player::UpdateSpeed(float refresh_rate_){
     if(refresh_rate_!=0){
         speed_ = 1.0F/refresh_rate_ * raw_speed_;
-        //std::cout << refresh_rate_ << " " << speed_ << std::endl;
     }
 }
 
