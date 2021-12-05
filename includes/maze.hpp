@@ -7,11 +7,11 @@
 #include <utility>
 class Maze { 
     public:
-        Maze(int width, int height);
-        int GetWidth();
-        int GetHeight();
+        Maze(int width, int height); //constructor for the Maze by the given paramters being the width and the height 
+        int GetWidth(); //returns the width of the maze
+        int GetHeight(); //returns the height of the maze
         // return the information at location(x,y) of the maze
-        Locinfo GetLocinfo(int y, int x);
+        Locinfo GetLocinfo(int y, int x);  //returns the location information while the parameters are y and x
         std::string RandomNeighbor(int y, int x); 
         // generate a maze with size of width * height
         void GenerateMaze(int width, int height);
@@ -33,9 +33,9 @@ class Maze {
 
 
     private:
-        int width_;
-        int height_;
-        std::vector<std::vector<Locinfo>> mazedata_;
+        int width_; //width of the maze
+        int height_; //height of the maze
+        std::vector<std::vector<Locinfo>> mazedata_; //stores the Locinfo object in 2d array
 };
 
 
