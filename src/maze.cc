@@ -274,50 +274,6 @@ std::vector<std::pair<int, const void*>> Maze::GetSizeData(){
     return {{GetWallCoor().size()*48, WallCoorArray(GetWallCoor())},{GetWallCoor().size()*24, WallCoorIndex(GetWallCoor().size())}, {GetWallCoor().size()*6, (void*) 0}};
 }
 
-std::pair<int,int> Maze::CastCoor_Otom(float y, float x){
-    float range = 1.4f;
-    y = -y + 0.7;
-    x = x + 0.7;
-    // the height of every brick 
-    float b_height = 1.4f/height_;
-    // first check horizontal --x
-    int mx = std::floor(x/b_height);
-    // in the most right wall
-    if(mx == width_) {
-        mx = mx - 1;
-    }
-    // vertical --y
-    int my = std::floor(y/b_height);
-    //in the most bottom wall
-    if(my == height_) {
-        my = my -1;
-    }
-    std::pair<int,int> output = std::make_pair(my,mx);
-    return output; 
-}
-
-std::pair<float,float> Maze::CastCoor_Mtoo(int y, int x) {
-    float range = 1.4f;
-    // the height of every brick 
-    float b_height = 1.4f/height_;
-    // the width of every brick
-    float b_width = 0.01f;
-    // horizontal --x
-    float x_center = (b_height + b_width)/2;
-    float output_x = x * b_height + x_center - 0.7f;
-    // vertical --y
-    float y_center = (b_height + b_width)/2;
-    float output_y = y * b_height + y_center - 0.7f;
-    output_y = (-1) * output_y;
-    std::pair<float,float> output = std::make_pair(output_y,output_x);
-    return output; 
-}
-
-std::pair<float,float> Maze::CastToCenter(float y, float x){
-    std::pair<int,int> cell = CastCoor_Otom(y, x);
-    return CastCoor_Mtoo(cell.first, cell.second);
-}
-
 bool Maze::CheckWallOverlap(float y, float x) {
     float b_height = 1.4f/height_;
     float b_width = 0.01f;

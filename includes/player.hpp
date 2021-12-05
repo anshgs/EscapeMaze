@@ -23,6 +23,9 @@ public:
     float GetSizeY();
     float* GetHitbox();
     void UpdateSpeed(float refresh_rate_);
+    void SetSpeed(float speed);
+    void SetXCoord(float coord_x);
+    void SetYCoord(float coord_y);
 
 };
 

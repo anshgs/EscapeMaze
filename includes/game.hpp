@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "maze.hpp"
 #include "player.hpp"
+#include "item.hpp"
 
 
 #include <iostream>
@@ -22,20 +23,27 @@ struct Level{
     const pair<float, float> start_coord_;
     const pair<float, float> win_coord_; 
     const float regen_time_interval;
+    const int num_items_;
 };
 class Game { 
     
 
     private:
-        int cur_level_ = 0;
+        size_t cur_level_ = 0;
+        int num_items_ = 0;
         vector<Level> levels_;
         Player* player_;
         GLFWwindow* game_window_;
+        bool invincible = false;
+        bool spedUp = false;
+        bool jchanged;
         unsigned int * element_buffer_objects_;
         unsigned int * vertex_array_objects_;
         unsigned int * vertex_buffer_objects_;
         map<string, vector<pair<int, const void*>>> name_to_size_data_;
         chrono::system_clock::time_point start_time_;
+        // chrono::system_clock::time_point speed_start_time_;
+        // chrono::system_clock::time_point invincible_start_time_;
         map<string, unsigned int> programs_;
 
         void Config();
@@ -51,11 +59,14 @@ class Game {
         void BindElement(string object_name);
         void Play(Level &level, Maze &maze);
         void ProcessInputAndRegenerate(Level &level, Maze &maze);
+        void ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
+
     public:
         void Init();
         void GenerateNextLevel();
         void AddLevel(Level level);
         float refresh_rate_;
+        std::vector<Item> items_;
 
 };
 
