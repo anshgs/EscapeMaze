@@ -59,6 +59,12 @@ float Player::GetSizeY(){
 float Player::GetSpeed(){
     return speed_;
 }
+void Player::MoveRight(float dx) {
+    coord_x_ += dx;
+}
+void Player::MoveUp(float dy) {
+    coord_y_ += dy;
+}
 
 float * Player::GetHitbox(){
     float x1 = coord_x_ - size_x_/2.0F;

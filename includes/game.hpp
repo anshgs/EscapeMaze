@@ -60,7 +60,7 @@ class Game {
         void Play(Level &level, Maze &maze);
         void ProcessInputAndRegenerate(Level &level, Maze &maze);
         void ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
-
+        void CheckOverlap(Maze &maze);
     public:
         void Init();
         void GenerateNextLevel();
