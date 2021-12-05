@@ -1,18 +1,88 @@
 #include "item.hpp"
+#include <utility>
+#include "utils.hpp"
 
-item::item() : item_name_("") , speed_multiplier_(0) , invincible_(false) { //set the default energy item name to nothing and set the energy level to 0.
-}
+void Item::SetRandomAttributes(int h) { //add energy to the user
+    int idx = rand()%possible_items_.size(); //random idx number generator from 0 to 2
+    item_name_ = possible_items_.at(idx);
+    mSize = h;
+    coord_x_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
+    coord_y_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
 
-item::item(std::string item_name, double speed_multiplier, bool invincible) : item_name_(item_name) , speed_multiplier_(speed_multiplier), invincible_(invincible) { //constructor that sets the item name to the parameter's input name and the energy level to the parameter's energy level
+    float tx = CastToCenter(coord_x_, coord_y_, mSize).first;
+    float ty = CastToCenter(coord_x_, coord_y_, mSize).second;
 
-}
+    coord_x_ = tx;
+    coord_y_ = ty;
 
-void item::Add_energy() { //add energy to the user
-    if (item_name_ == "Monster") {  ///Monster Drink
-        speed_multiplier_ += 20;
-    } else if (item_name_ == "Coffee") {  ///Coffee Drink
-        speed_multiplier_ += 10;
+    if (item_name_ == "SpeedBoost") {  
+        size_x_ = 0.01f;
+        size_y_ = 0.01f;
+        speed_boost_ = true;
+    } else if (item_name_ == "Teleport"){
+        size_x_ = 0.005f;
+        size_y_ = 0.02f;
+        teleport_ = true;
+    } else if (item_name_ == "Invincible"){
+        size_x_ = 0.03f;
+        size_y_ = 0.005f;
+        invincible_ = true;
     }
+
     
 }
 
+float Item::GetSizeX(){
+    return size_x_;
+}
+float Item::GetSizeY(){
+    return size_y_;
+}
+
+
+float * Item::GetHitbox(){
+    float x1 = coord_x_ - size_x_/2.0F;
+    float x2 = coord_x_ + size_x_/2.0F;
+    float y1 = coord_y_ - size_y_/2.0F;
+    float y2 = coord_y_ + size_y_/2.0F;
+    //TODO: fix this
+    float * hitbox = new float[12];
+    hitbox[0] = x1;
+    hitbox[1] = y1;
+    hitbox[2] = 0.0F;
+    hitbox[3] = x2;
+    hitbox[4] = y1;
+    hitbox[5] = 0.0F;
+    hitbox[6] = x2;
+    hitbox[7] = y2;
+    hitbox[8] = 0.0F;
+    hitbox[9] = x1;
+    hitbox[10] = y2;
+    hitbox[11] = 0.0F;
+    return hitbox;
+}
+
+vector<float> Item::GetCorners(){
+    float x1 = coord_x_ - size_x_/2.0F;
+    float x2 = coord_x_ + size_x_/2.0F;
+    float y1 = coord_y_ - size_y_/2.0F;
+    float y2 = coord_y_ + size_y_/2.0F;
+    vector<float> hitbox;
+    hitbox.push_back(x1);
+    hitbox.push_back(x2);
+    hitbox.push_back(y1);
+    hitbox.push_back(y2);
+    return hitbox;
+}
+
+bool Item::GetSpeedBoost() {
+    return speed_boost_;
+}
+    
+bool Item::GetInvincible() {
+    return invincible_;
+}
+
+bool Item::GetTeleport() {
+    return teleport_;
+}

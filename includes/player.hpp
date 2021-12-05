@@ -12,6 +12,7 @@ private:
     float size_y_ = 0; //default y size is 0
     float raw_speed_ = 0; //default raw speed is 0
 public:
+<<<<<<< HEAD
     Player(); //default constructor for the player
     void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y); //sets the attributes of the player using x coord_x, y coord_y, speed, size of x and size of y as input parameters
     void MoveUp(); //moves the player up
@@ -23,6 +24,22 @@ public:
     float GetSizeY(); //returns the size of y
     float* GetHitbox(); //gets the hit box
     void UpdateSpeed(float refresh_rate_); //updates the speed by using the parameter refresh rate
+=======
+    Player();
+    void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y);
+    void MoveUp();
+    void MoveDown();
+    void MoveLeft();
+    void MoveRight();
+    float GetSpeed();
+    float GetSizeX();
+    float GetSizeY();
+    float* GetHitbox();
+    void UpdateSpeed(float refresh_rate_);
+    void SetSpeed(float speed);
+    void SetXCoord(float coord_x);
+    void SetYCoord(float coord_y);
+>>>>>>> 7fe2bd48e2f66c8abbc60fdd859b52fbc0b559bc
 
 };
 
