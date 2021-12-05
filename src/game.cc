@@ -122,8 +122,11 @@ void Game::Play(Level &level, Maze &maze){
     }
     int frame_counter = 0;
     chrono::system_clock::time_point start_time = chrono::system_clock::now();
+    chrono::system_clock::time_point speed_start_time = chrono::system_clock::now() ;
+    chrono::system_clock::time_point invincible_start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
+        ProcessItems(level, maze, speed_start_time, invincible_start_time);
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
@@ -131,27 +134,12 @@ void Game::Play(Level &level, Maze &maze){
             frame_counter++;
         }
     }
-    // int frame_counter = 0;
-    // chrono::system_clock::time_point start_time = chrono::system_clock::now();
-    // while(!glfwWindowShouldClose(game_window_)){
-    //     ProcessInputAndRegenerate(level, maze);
-    //     frame_counter++;
-
-    //     if(frame_counter == 100){
-    //         refresh_rate_ = 100.0f/((chrono::system_clock::now() - start_time).count());
-    //     }else if(frame_counter < 100){
-    //         refresh_rate_ = (1.0f*frame_counter)/((chrono::system_clock::now() - start_time).count());
-    //     }
-    //     player_->UpdateSpeed(refresh_rate_);
-    // }
-    cout << " reached 5" << endl;
     glDeleteVertexArrays(kNumObjects, vertex_array_objects_);
     glDeleteBuffers(kNumObjects, vertex_buffer_objects_);
     glDeleteBuffers(kNumObjects, element_buffer_objects_);
     for(const auto& name_program_pair : programs_){    
         glDeleteProgram(name_program_pair.second);
     }
-    cout << " reached 6" << endl;
     glfwTerminate();
 }
 
@@ -181,6 +169,55 @@ void Game::ProcessInput(Level &level, Maze &maze){
     win_tile_coords.push_back(win_tile_hitbox[1]);
     win_tile_coords.push_back(win_tile_hitbox[10]);
 
+    if(spedUp) inc*=2;
+
+    if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
+        // float c1 = (rand()%10)/10.0f;
+        // float c2 = (rand()%10)/10.0f;
+        // float c3 = (rand()%10)/10.0f;
+        // glClearColor(c1, c2, c3, 1.0f);
+        // glClear(GL_COLOR_BUFFER_BIT);
+        level_over = true;
+    }
+
+    if (glfwGetKey(game_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+        glfwSetWindowShouldClose(game_window_, true);
+        exit(EXIT_SUCCESS);
+    }
+
+    if(!level_over){
+
+        if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
+            if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
+                    player_->MoveRight();
+            }
+        }
+        if (glfwGetKey(game_window_, GLFW_KEY_LEFT) == GLFW_PRESS){
+            if(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0))){
+                    player_->MoveLeft();
+            }
+        }
+        if (glfwGetKey(game_window_, GLFW_KEY_DOWN) == GLFW_PRESS){
+            if(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc))){
+                    player_->MoveDown();
+            }
+        }
+        if (glfwGetKey(game_window_, GLFW_KEY_UP) == GLFW_PRESS){
+            if(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc))){
+                    player_->MoveUp();
+            }
+        }
+    }
+}
+
+void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_){
+    float* player_hitbox = player_->GetHitbox();
+    vector<float> player_current_coords;
+    player_current_coords.push_back(player_hitbox[0]);
+    player_current_coords.push_back(player_hitbox[3]);
+    player_current_coords.push_back(player_hitbox[1]);
+    player_current_coords.push_back(player_hitbox[10]);
+
     for(int i = 0; i<num_items_; i++){
         if(CollideOnMove(player_current_coords, items_[i].GetCorners(), 0, 0)){
             if(items_[i].GetTeleport()){
@@ -196,6 +233,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
                 invincible_start_time_ = chrono::system_clock::now();
             }
             if(items_[i].GetSpeedBoost()){
+                if(!spedUp) player_->SetSpeed(player_->GetSpeed()*2);
                 spedUp = true;
                 speed_start_time_ = chrono::system_clock::now();
                 glClearColor(0.0f, 1.0f, 0.0f, 0.4f);
@@ -231,71 +269,8 @@ void Game::ProcessInput(Level &level, Maze &maze){
         if((diff).count() > 10*1000){
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+            player_->SetSpeed(player_->GetSpeed()/2);
             spedUp = false;
-        }
-    }
-
-    if(spedUp) inc*=2;
-
-    if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
-        // float c1 = (rand()%10)/10.0f;
-        // float c2 = (rand()%10)/10.0f;
-        // float c3 = (rand()%10)/10.0f;
-        // glClearColor(c1, c2, c3, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT);
-        level_over = true;
-    }
-
-    if (glfwGetKey(game_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-        glfwSetWindowShouldClose(game_window_, true);
-        exit(EXIT_SUCCESS);
-    }
-
-    if(!level_over){
-
-        if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
-            if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
-                if(spedUp){
-                    player_->SetSpeed(player_->GetSpeed()*2);
-                    player_->MoveRight();
-                    player_->SetSpeed(player_->GetSpeed()/2);
-                }
-                else
-                    player_->MoveRight();
-            }
-        }
-        if (glfwGetKey(game_window_, GLFW_KEY_LEFT) == GLFW_PRESS){
-            if(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0))){
-                if(spedUp){
-                    player_->SetSpeed(player_->GetSpeed()*2);
-                    player_->MoveLeft();
-                    player_->SetSpeed(player_->GetSpeed()/2);
-                }
-                else
-                    player_->MoveLeft();
-            }
-        }
-        if (glfwGetKey(game_window_, GLFW_KEY_DOWN) == GLFW_PRESS){
-            if(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc))){
-                if(spedUp){
-                    player_->SetSpeed(player_->GetSpeed()*2);
-                    player_->MoveDown();
-                    player_->SetSpeed(player_->GetSpeed()/2);
-                }
-                else
-                    player_->MoveDown();
-            }
-        }
-        if (glfwGetKey(game_window_, GLFW_KEY_UP) == GLFW_PRESS){
-            if(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc))){
-                if(spedUp){
-                    player_->SetSpeed(player_->GetSpeed()*2);
-                    player_->MoveUp();
-                    player_->SetSpeed(player_->GetSpeed()/2);
-                }
-                else
-                    player_->MoveUp();
-            }
         }
     }
 }

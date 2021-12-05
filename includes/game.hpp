@@ -42,8 +42,8 @@ class Game {
         unsigned int * vertex_buffer_objects_;
         map<string, vector<pair<int, const void*>>> name_to_size_data_;
         chrono::system_clock::time_point start_time_;
-        chrono::system_clock::time_point speed_start_time_;
-        chrono::system_clock::time_point invincible_start_time_;
+        // chrono::system_clock::time_point speed_start_time_;
+        // chrono::system_clock::time_point invincible_start_time_;
         map<string, unsigned int> programs_;
 
         void Config();
@@ -59,6 +59,8 @@ class Game {
         void BindElement(string object_name);
         void Play(Level &level, Maze &maze);
         void ProcessInputAndRegenerate(Level &level, Maze &maze);
+        void ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
+
     public:
         void Init();
         void GenerateNextLevel();
