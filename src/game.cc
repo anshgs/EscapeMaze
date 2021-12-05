@@ -65,6 +65,7 @@ void Game::GenerateNextLevel(){
     }   
     Level next_level = levels_.at(cur_level_++);
     player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
+    ai_.clear();
     if(next_level.num_ai_ > 0){    
         for(int i = 0; i < next_level.num_ai_; i++){
             Ai ai;
@@ -183,9 +184,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
 
     if(!level_over){
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
-            cout << "pressed" << endl;
             if(player_current_coords[3]+inc <= 1 && !CollideWalls(player_current_coords, walls, inc, 0)){
-                cout << "asd" << endl;
                 player_->MoveRight();
             }
         }
