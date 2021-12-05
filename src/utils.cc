@@ -107,4 +107,46 @@ unsigned int* CoorIndex(size_t size){
         pos+=6;
     }
     return output;
+std::pair<int,int> CastCoorFloatToGrid(float x, float y, int height_){
+    float range = 1.4f;
+    y = -y + 0.7;
+    x = x + 0.7;
+    // the height of every brick 
+    float b_height = 1.4f/height_;
+    // first check horizontal --x
+    int mx = std::floor(x/b_height);
+    // in the most right wall
+    if(mx == height_) {
+        mx = mx - 1;
+    }
+    // vertical --y
+    int my = std::floor(y/b_height);
+    //in the most bottom wall
+    if(my == height_) {
+        my = my -1;
+    }
+    std::pair<int,int> output = std::make_pair(mx,my);
+    return output; 
+}
+
+std::pair<float,float> CastCoorGridToFloat(int x, int y, int height_) {
+    float range = 1.4f;
+    // the height of every brick 
+    float b_height = 1.4f/height_;
+    // the width of every brick
+    float b_width = 0.01f;
+    // horizontal --x
+    float x_center = (b_height + b_width)/2;
+    float output_x = x * b_height + x_center - 0.7f;
+    // vertical --y
+    float y_center = (b_height + b_width)/2;
+    float output_y = y * b_height + y_center - 0.7f;
+    output_y = (-1) * output_y;
+    std::pair<float,float> output = std::make_pair(output_x,output_y);
+    return output; 
+}
+
+std::pair<float,float> CastToCenter(float x, float y, int height_){
+    std::pair<int,int> cell = CastCoorFloatToGrid(x, y, height_);
+    return CastCoorGridToFloat(cell.first, cell.second, height_);
 }

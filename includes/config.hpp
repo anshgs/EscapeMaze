@@ -45,16 +45,15 @@ const char *kFragmentShaderSourceAi = "#version 330 core\n"
     "   FragColor = vec4(1.0f, 0.05f, 0.05f, 1.0f);\n" //last value 1.0f is for transparency r g b 
     "}\n\0";
 
-const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceWalls, kFragmentShaderSourcePlayer, /*kFragmentShaderSourceItems,*/ kFragmentShaderSourceAi};
 
-const vector<string> kNames = {"walls", "win_tile", "player", /*"items",*/ "ai"};
+const vector<string> kNames = {"walls", "win_tile", "player", "items", "ai"};
 
-const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"player", 2} , {"ai", 3} /*{"items",3}, {"ai", 4}*/};
+const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"player", 2} , {"items",3}, {"ai", 4}};
 
 bool game_over = false;
 bool level_over = false;
 
-constexpr unsigned int kNumObjects = 4;
+constexpr unsigned int kNumObjects = 5;
 
 unsigned int rectangle_ind[] = {
     0, 1, 3,

@@ -55,7 +55,7 @@ pair<float, float> Ai::GetCenterYX(){
 }
 
 void Ai::Seek(pair<float, float> player_coords){
-
+    
 }
 
 float * Ai::GetHitbox(){

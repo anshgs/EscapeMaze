@@ -15,9 +15,21 @@ void Player::SetAttributes(float coord_x, float coord_y, float speed, float size
     size_y_ = size_y;
 }
 
+void Player::SetSpeed(float speed){
+    speed_ = speed;
+}
+
+void Player::SetXCoord(float coord_x){
+    coord_x_ = coord_x;
+}
+
+void Player::SetYCoord(float coord_y){
+    coord_y_ = coord_y;
+}
+
 void Player::UpdateSpeed(float refresh_rate_){
     if(refresh_rate_!=0){
-        //speed_ = 0.000167/refresh_rate_ * raw_speed_;
+        speed_ = 1.0F/refresh_rate_ * raw_speed_;
     }
 }
 
