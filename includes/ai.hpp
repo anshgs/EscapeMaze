@@ -2,6 +2,8 @@
 #define AI_HPP
 
 #include "maze.hpp"
+#include "utils.hpp"
+#include "locinfo.hpp"
 #include<utility>
 using namespace std;
 class Ai{
@@ -13,13 +15,13 @@ class Ai{
         float size_x_ = 0;
         float size_y_ = 0;
         float raw_speed_ = 0;
-        Maze maze_;
+        Maze* maze_;
     
     public:
 
         Ai();
-        void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y);
-        void ScanMaze(Maze maze);
+        void SetAttributes(pair<float, float> coords, float speed, float size_);
+        //void ScanMaze(Maze& maze);
         void MoveUp();
         void MoveDown();
         void MoveLeft();
@@ -28,9 +30,9 @@ class Ai{
         float GetSizeX();
         float GetSizeY();
         float* GetHitbox();
-        pair<float, float> GetCenterYX();
+        pair<float, float> GetCenter();
         void UpdateSpeed(float refresh_rate_);
-        void Seek(pair<float, float> player_coords);
+        void Seek(pair<float, float> player_coords, int height, Maze& maze);
 
 
 };

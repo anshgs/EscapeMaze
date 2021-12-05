@@ -6,13 +6,13 @@ Player::Player(){
     
 }
 
-void Player::SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y){
-    coord_x_ = coord_x;
-    coord_y_ = coord_y;
+void Player::SetAttributes(pair<float, float> coords, float speed, float size){
+    coord_x_ = coords.first;
+    coord_y_ = coords.second;
     speed_ = speed;
     raw_speed_ = speed;
-    size_x_ = size_x;
-    size_y_ = size_y;
+    size_x_ = size;
+    size_y_ = size;
 }
 
 void Player::SetSpeed(float speed){
@@ -60,8 +60,8 @@ float Player::GetSpeed(){
     return speed_;
 }
 
-pair<float, float> Player::GetCenterYX(){
-    return {coord_y_, coord_x_};
+pair<float, float> Player::GetCenter(){
+    return {coord_x_, coord_y_};
 }
 
 float * Player::GetHitbox(){

@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "config.hpp"
 #include <iostream>
+#include <cmath>
 void Game::Config(){
 }
 
@@ -71,19 +72,17 @@ void Game::GenerateNextLevel(){
         new_item.SetRandomAttributes(next_level.maze_height_);
         items_.push_back(new_item);
     }
-    player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
+    player_->SetAttributes(CastCoorGridToFloat(next_level.start_coord_.first, next_level.start_coord_.second, next_level.maze_height_), next_level.player_speed_, (next_level.maze_height_-3)*(0.5F/next_level.maze_height_)/next_level.maze_height_);
     ai_.clear();
     if(next_level.num_ai_ > 0){    
         for(int i = 0; i < next_level.num_ai_; i++){
-            Ai ai;
-            ai.SetAttributes(next_level.ai_start_coords_[i].first, next_level.ai_start_coords_[i].second, next_level.ai_speed_, next_level.ai_width_, next_level.ai_height_); 
+            Ai* ai = new Ai();
+            ai->SetAttributes(CastCoorGridToFloat(next_level.ai_start_coords_[i].first, next_level.ai_start_coords_[i].second, next_level.maze_height_), next_level.ai_speed_, (next_level.maze_height_-3)*(0.5F/next_level.maze_height_)/next_level.maze_height_);
             ai_.push_back(ai);
         }
     }
     Maze maze(next_level.maze_width_, next_level.maze_height_);
-    for(Ai ai : ai_){
-        ai.ScanMaze(maze);
-    }
+
     start_time_ = chrono::system_clock::now();
     Play(next_level, maze);
 }
@@ -99,7 +98,7 @@ void Game::Play(Level &level, Maze &maze){
         name_to_size_data_[name] = vector<pair<int, const void*>>();
     }
     float * fetched_player_hitbox = player_->GetHitbox();
-    float * fetched_win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
+    float * fetched_win_tile_hitbox = GetHitbox(CastCoorGridToFloat(level.win_coord_.first, level.win_coord_.second, level.maze_height_), player_->GetSizeX(), player_->GetSizeY());
     float player_hitbox[12];
     float win_tile_hitbox[12];
     for(int i = 0; i < 12; i++){
@@ -143,8 +142,8 @@ void Game::Play(Level &level, Maze &maze){
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
             player_->UpdateSpeed(refresh_rate_);
-            for(Ai ai : ai_){
-                ai.UpdateSpeed(refresh_rate_);
+            for(Ai* ai : ai_){
+                ai->UpdateSpeed(refresh_rate_);
             }
             frame_counter++;
         }
@@ -161,7 +160,7 @@ void Game::Play(Level &level, Maze &maze){
 vector<pair<int, const void*>> Game::GetAiSizeData(){
     vector<float*> ai_coords_v;
     for(int i = 0; i < ai_.size(); i++){
-        ai_coords_v.push_back(ai_[i].GetHitbox());
+        ai_coords_v.push_back(ai_[i]->GetHitbox());
     }
     return {{ai_coords_v.size()*48, CoorArray(ai_coords_v)},{ai_coords_v.size()*24, CoorIndex(ai_coords_v.size())}, {ai_coords_v.size()*6, (void*) 0}};
 }
@@ -185,7 +184,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
 
     set<vector<float>> walls;
     walls = maze.GetWallCoor();
-    float* win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
+    float* win_tile_hitbox = GetHitbox(CastCoorGridToFloat(level.win_coord_.first, level.win_coord_.second, level.maze_height_), player_->GetSizeX(), player_->GetSizeY());
     vector<float> win_tile_coords;
     win_tile_coords.push_back(win_tile_hitbox[0]);
     win_tile_coords.push_back(win_tile_hitbox[3]);
@@ -209,7 +208,6 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
 
     if(!level_over){
-
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
                     player_->MoveRight();
@@ -316,10 +314,7 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
             name_to_size_data_["walls"] = maze.GetSizeData();
             BindElement("walls");
         }
-
-        for(Ai ai : ai_){
-            ai.Seek(player_->GetCenterYX());
-        }
+        
         name_to_size_data_["ai"] = GetAiSizeData();
         BindElement("ai");
         float * fetched_player_hitbox = player_->GetHitbox();
@@ -356,6 +351,9 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
     }
     
     ProcessInput(level, maze);
+    for(Ai* ai : ai_){
+        ai->Seek(player_->GetCenter(), level.maze_height_, maze);
+    }
     glfwSwapBuffers(game_window_);
     glfwPollEvents();
 }

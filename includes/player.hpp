@@ -17,7 +17,7 @@ private:
     float raw_speed_ = 0;
 public:
     Player();
-    void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y);
+    void SetAttributes(pair<float, float> coords, float speed, float size_);
     void MoveUp();
     void MoveDown();
     void MoveLeft();
@@ -26,7 +26,7 @@ public:
     float GetSizeX();
     float GetSizeY();
     float* GetHitbox();
-    pair<float, float> GetCenterYX();
+    pair<float, float> GetCenter();
     void UpdateSpeed(float refresh_rate_);
     void SetSpeed(float speed);
     void SetXCoord(float coord_x);

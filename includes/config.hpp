@@ -46,6 +46,8 @@ const char *kFragmentShaderSourceAi = "#version 330 core\n"
     "}\n\0";
 
 
+const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceWalls, kFragmentShaderSourcePlayer, kFragmentShaderSourceItems, kFragmentShaderSourceAi};
+
 const vector<string> kNames = {"walls", "win_tile", "player", "items", "ai"};
 
 const map<string, unsigned int> kIndexMap = {{"walls", 0}, {"win_tile", 1}, {"player", 2} , {"items",3}, {"ai", 4}};
