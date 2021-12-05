@@ -25,7 +25,6 @@ class Maze {
         std::vector<std::pair<int, const void*>> GetSizeData();
         bool CheckWallOverlap(float y, float x);
 
-
     private:
         int width_;
         int height_;

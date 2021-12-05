@@ -317,6 +317,9 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
         
         name_to_size_data_["ai"] = GetAiSizeData();
         BindElement("ai");
+        // to do
+        CheckOverlap(maze);
+
         float * fetched_player_hitbox = player_->GetHitbox();
         float player_hitbox[12];
         for(int i = 0; i < 12; i++){
@@ -438,4 +441,40 @@ void Game::BindElement(string object_name){
 
 void Game::AddLevel(Level level){
     levels_.push_back(level);
+}
+
+
+void Game::CheckOverlap(Maze &maze) {
+    float* player_hitbox = player_->GetHitbox();
+    vector<float> player_current_coords;
+    player_current_coords.push_back(player_hitbox[0]);
+    player_current_coords.push_back(player_hitbox[3]);
+    player_current_coords.push_back(player_hitbox[1]);
+    player_current_coords.push_back(player_hitbox[10]);
+    set<vector<float>> walls;
+    walls = maze.GetWallCoor();
+    // if collide with the wall
+    while(CollideWalls(player_current_coords, walls, 0, 0)) {
+        // std::cout<<"overlap with wall"<<std::endl;
+        std::pair<float,float> a = CastToCenter(player_hitbox[0],player_hitbox[1],maze.GetHeight());
+        float dx = a.first - player_hitbox[0];
+        float dy = a.second - player_hitbox[1];
+        if(dy > 0) {
+            player_->MoveUp(dy/10.0f);
+        } else {
+            player_->MoveUp(dy/10.0f);
+        }
+        if(dx > 0) {
+            player_->MoveRight(dx/10.0f);
+        } else {
+            player_->MoveRight(dx/10.0f);
+        }
+        // std::cout<<a.first<<std::endl;
+        // std::cout<<a.second<<std::endl;
+        float* player_hitbox = player_->GetHitbox();
+        player_current_coords[0] = player_hitbox[0];
+        player_current_coords[1] = player_hitbox[3];
+        player_current_coords[2] = player_hitbox[1];
+        player_current_coords[3] = player_hitbox[10];
+    }
 }

@@ -59,6 +59,12 @@ float Player::GetSizeY(){
 float Player::GetSpeed(){
     return speed_;
 }
+void Player::MoveRight(float dx) {
+    coord_x_ += dx;
+}
+void Player::MoveUp(float dy) {
+    coord_y_ += dy;
+}
 
 pair<float, float> Player::GetCenter(){
     return {coord_x_, coord_y_};

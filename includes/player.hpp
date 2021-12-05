@@ -31,6 +31,8 @@ public:
     void SetSpeed(float speed);
     void SetXCoord(float coord_x);
     void SetYCoord(float coord_y);
+    void MoveRight(float dx);
+    void MoveUp(float dy);
 
 };
 
