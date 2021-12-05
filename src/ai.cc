@@ -162,4 +162,19 @@ float * Ai::GetHitbox(){
     hitbox[10] = y2;
     hitbox[11] = 0.0F;
     return hitbox;
+
+    
+}
+
+vector<float> Ai::GetCorners(){
+    float x1 = coord_x_ - size_x_/2.0F;
+    float x2 = coord_x_ + size_x_/2.0F;
+    float y1 = coord_y_ - size_y_/2.0F;
+    float y2 = coord_y_ + size_y_/2.0F;
+    vector<float> hitbox;
+    hitbox.push_back(x1);
+    hitbox.push_back(x2);
+    hitbox.push_back(y1);
+    hitbox.push_back(y2);
+    return hitbox;
 }

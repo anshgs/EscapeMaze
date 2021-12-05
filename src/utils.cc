@@ -5,7 +5,6 @@
 #include <set>
 #include<math.h>
 #include <iostream>
-using namespace std;
 
 
 bool CollideOnMove(vector<float> obj1_coords, vector<float> obj2_coords, float dx, float dy){ //x1 x2 y1 y2
@@ -25,6 +24,15 @@ bool CollideOnMove(vector<float> obj1_coords, vector<float> obj2_coords, float d
 bool CollideWalls(vector<float> player_coords, set<vector<float>> walls_coords, float dx, float dy){ //x1 x2 y1 y2
     for(vector<float> wall_coords : walls_coords){
         if(CollideOnMove(player_coords, wall_coords, dx, dy)){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CollideAi(vector<float> player_coords, vector<vector<float>> ai_coords, float dx, float dy){ //x1 x2 y1 y2
+    for(vector<float> ai_coord : ai_coords){
+        if(CollideOnMove(player_coords, ai_coords, dx, dy)){
             return true;
         }
     }

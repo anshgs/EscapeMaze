@@ -11,6 +11,8 @@ using namespace std;
 void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 bool CollideOnMove(vector<float> obj1_coords, vector<float> obj2_coords, float dx, float dy);
 bool CollideWalls(vector<float> player_coords, set<vector<float>> walls_coords, float dx, float dy);
+bool CollideAi(vector<float> player_coords, vector<vector<float>> ai_coords, float dx, float dy){ //x1 x2 y1 y2
+
 float* GetHitbox(pair<float, float> center, float size_x, float size_y);
 float* CoorArray(set<vector<float>> coor);
 float* CoorArray(vector<float*> coor);

@@ -11,7 +11,6 @@
 #include <chrono>
 #include <utility>
 #include <map>
-using namespace std;
 struct Level{
     const float player_speed_;
     const int num_ai_;

@@ -136,8 +136,10 @@ void Game::Play(Level &level, Maze &maze){
     chrono::system_clock::time_point speed_start_time = chrono::system_clock::now() ;
     chrono::system_clock::time_point invincible_start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
-        ProcessInputAndRegenerate(level, maze);
-        ProcessItems(level, maze, speed_start_time, invincible_start_time);
+        if(!game_over){
+            ProcessInputAndRegenerate(level, maze);
+            ProcessItems(level, maze, speed_start_time, invincible_start_time);
+        }
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
@@ -172,6 +174,7 @@ void Game::Draw(string object_name){
 }
 
 void Game::ProcessInput(Level &level, Maze &maze){
+   
 
     float inc = player_->GetSpeed();
 
@@ -181,6 +184,16 @@ void Game::ProcessInput(Level &level, Maze &maze){
     player_current_coords.push_back(player_hitbox[3]);
     player_current_coords.push_back(player_hitbox[1]);
     player_current_coords.push_back(player_hitbox[10]);
+
+    vector<vector<float>> ai_coords;
+    for(Ai ai : ai_){
+        ai_coords.push_back(ai.GetCorners());
+    }
+    if(CollideAi(player_current_coords, ai_coords, 0, 0)){
+        game_over = true;
+        glClearColor(0.3F, 0.0F, 0.0F, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
 
     set<vector<float>> walls;
     walls = maze.GetWallCoor();
@@ -192,7 +205,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     win_tile_coords.push_back(win_tile_hitbox[10]);
 
     if(spedUp) inc*=2;
-
+    inc = min(inc, 0.0095f);
     if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
         // float c1 = (rand()%10)/10.0f;
         // float c2 = (rand()%10)/10.0f;
@@ -210,22 +223,66 @@ void Game::ProcessInput(Level &level, Maze &maze){
     if(!level_over){
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
-                    player_->MoveRight();
+                    player_->MoveRight(inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveRight(inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_LEFT) == GLFW_PRESS){
             if(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0))){
-                    player_->MoveLeft();
+                player_->MoveRight(-1*inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveRight(-1*inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_DOWN) == GLFW_PRESS){
             if(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc))){
-                    player_->MoveDown();
+                    player_->MoveUp(-1*inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveUp(-1*inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_UP) == GLFW_PRESS){
             if(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc))){
-                    player_->MoveUp();
+                player_->MoveUp(inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveUp(inc);
+                }
+                inc = temp_inc;
             }
         }
     }
@@ -268,10 +325,10 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
     chrono::system_clock::time_point cur_time = chrono::system_clock::now();
     if(invincible){
         chrono::duration<double, std::milli> diff = chrono::system_clock::now() - invincible_start_time_;
-        if((diff.count()/500) - (int)(diff.count()/500) < 0.01 && !jchanged){
-            float c1 = (rand()%10)/10.0f;
-            float c2 = (rand()%10)/10.0f;
-            float c3 = (rand()%10)/10.0f;
+        if((diff.count()/500) - (int)(diff.count()/500) < 0.1 && !jchanged){
+            float c1 = (rand()%10)/20.0f;
+            float c2 = (rand()%10)/20.0f;
+            float c3 = (rand()%10)/20.0f;
             glClearColor(c1, c2, c3, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             jchanged = true;

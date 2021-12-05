@@ -30,6 +30,7 @@ class Ai{
         float GetSizeX();
         float GetSizeY();
         float* GetHitbox();
+        vector<float> GetCorners();
         pair<float, float> GetCenter();
         void UpdateSpeed(float refresh_rate_);
         void Seek(pair<float, float> player_coords, int height, Maze& maze);
