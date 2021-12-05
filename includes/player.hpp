@@ -12,39 +12,20 @@ private:
     float size_y_ = 0; //default y size is 0
     float raw_speed_ = 0; //default raw speed is 0
 public:
-<<<<<<< HEAD
-    Player(); //default constructor for the player
-    void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y); //sets the attributes of the player using x coord_x, y coord_y, speed, size of x and size of y as input parameters
-    void MoveUp(); //moves the player up
-    void MoveDown(); //moves the player down
-    void MoveLeft(); //moves the player left
-    void MoveRight(); //moves the player right
-    float GetSpeed(); //returns the speed
+    Player(); //default constructor for player class
+    void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y); //sets attributes using the x coordinates, y coordinates, speed, size of x, and size of y
+    void MoveUp(); //function to move up
+    void MoveDown(); //function to move down
+    void MoveLeft(); //function to move left
+    void MoveRight(); //function to move right
+    float GetSpeed(); //returns the speed of the player
     float GetSizeX(); //returns the size of x
     float GetSizeY(); //returns the size of y
-    float* GetHitbox(); //gets the hit box
-    void UpdateSpeed(float refresh_rate_); //updates the speed by using the parameter refresh rate
-=======
-    Player();
-    void SetAttributes(float coord_x, float coord_y, float speed, float size_x, float size_y);
-    void MoveUp();
-    void MoveDown();
-    void MoveLeft();
-    void MoveRight();
-    float GetSpeed();
-    float GetSizeX();
-    float GetSizeY();
-    float* GetHitbox();
-    void UpdateSpeed(float refresh_rate_);
-    void SetSpeed(float speed);
-    void SetXCoord(float coord_x);
-    void SetYCoord(float coord_y);
->>>>>>> 7fe2bd48e2f66c8abbc60fdd859b52fbc0b559bc
-
+    float* GetHitbox(); //returns the hitbox
+    void UpdateSpeed(float refresh_rate_); //updates the speed by using the refresh rate as the parameter
+    void SetSpeed(float speed); //set the speed by the given speed parameter
+    void SetXCoord(float coord_x); //set the x cord by the given x coord
+    void SetYCoord(float coord_y); //set the y cord by the given y coord
 };
-
-
-
-
 
 #endif

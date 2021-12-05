@@ -18,11 +18,11 @@ class Maze {
         // draw maze in cout for tesint purpose [TEST]
         void MazeOut();
         // generate the coordinates of a wall; dim: num of bricks * 12(4*3)
-        std::set<std::vector<float>> GetWallCoor();
+        std::set<std::vector<float>> GetWallCoor(); 
         float* WallCoorArray(std::set<std::vector<float>> coor);
-        unsigned int* WallCoorIndex(size_t size);
-        std::vector<std::pair<int, const void*>> GetSizeData();
-        bool CheckWallOverlap(float y, float x);
+        unsigned int* WallCoorIndex(size_t size); //sets the wall coordinates to size
+        std::vector<std::pair<int, const void*>> GetSizeData(); //returns the size of the data
+        bool CheckWallOverlap(float y, float x); //check if the map overlaps with y and x
 
 
     private:
@@ -30,9 +30,5 @@ class Maze {
         int height_; //height of the maze
         std::vector<std::vector<Locinfo>> mazedata_; //stores the Locinfo object in 2d array
 };
-
-
-
-
 
 #endif
