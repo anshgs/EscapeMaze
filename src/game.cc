@@ -230,10 +230,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 15 && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
-                    inc *= 0.75F;
+                while(shiftcount++ < 5 && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
+                    inc *= 0.5F;
                 }
-                if(shiftcount < 15){
+                if(shiftcount < 5){
                     player_->MoveRight(inc);
                 }
                 inc = temp_inc;
@@ -246,10 +246,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 15 && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
-                    inc *= 0.75F;
+                while(shiftcount++ < 5 && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
+                    inc *= 0.5F;
                 }
-                if(shiftcount < 15){
+                if(shiftcount < 5){
                     player_->MoveRight(-1*inc);
                 }
                 inc = temp_inc;
@@ -262,10 +262,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 15 && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
-                    inc *= 0.75F;
+                while(shiftcount++ < 5 && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
+                    inc *= 0.5F;
                 }
-                if(shiftcount < 15){
+                if(shiftcount < 5){
                     player_->MoveUp(-1*inc);
                 }
                 inc = temp_inc;
@@ -278,10 +278,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 15 && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
-                    inc *= 0.75F;
+                while(shiftcount++ < 5 && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
+                    inc *= 0.5F;
                 }
-                if(shiftcount < 15){
+                if(shiftcount < 5){
                     player_->MoveUp(inc);
                 }
                 inc = temp_inc;
@@ -298,9 +298,22 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
     player_current_coords.push_back(player_hitbox[1]);
     player_current_coords.push_back(player_hitbox[10]);
 
+    if(tp_color_change == 20){
+        tp_color_change=0;
+        teleportColors = false;
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }else if(teleportColors){
+        tp_color_change++;
+    }
+
     for(int i = 0; i<num_items_; i++){
         if(CollideOnMove(player_current_coords, items_[i].GetCorners(), 0, 0)){
             if(items_[i].GetTeleport()){
+                glClearColor(0.7f, 0.0f, 0.7f, 0.5f);
+                glClear(GL_COLOR_BUFFER_BIT);
+                tp_color_change = 0;
+                teleportColors = true;
                 float coord_x_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
                 float coord_y_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
                 float tx = CastToCenter(coord_x_, coord_y_, maze.GetHeight()).first;
@@ -316,7 +329,7 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
                 if(!spedUp) player_->SetSpeed(player_->GetSpeed()*2);
                 spedUp = true;
                 speed_start_time_ = chrono::system_clock::now();
-                glClearColor(0.0f, 1.0f, 0.0f, 0.4f);
+                glClearColor(0.0f, 0.5f, 0.0f, 0.4f);
                 glClear(GL_COLOR_BUFFER_BIT);
             }
             items_.erase(items_.begin() + i);
