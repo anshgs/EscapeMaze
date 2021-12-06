@@ -47,8 +47,8 @@ TEST_CASE("Set random attributes") {
 
 
 /////////////////////////////Test cases for the players//////////////////////
-TEST_CASE("Checks the default constructor") {
-    Player p1 = new Player(); //Default constructor for this test case
+TEST_CASE("Checks the Player object") {
+    Player* p1 = new Player(); //Default constructor for this test case
 
     REQUIRE(p1.GetSizeX() == 0); //checks if the x is 0 for the default constructor
     REQUIRE(p1.GetSizeY() == 0); //checks if the y is 0 for the default constructor
@@ -77,7 +77,6 @@ TEST_CASE("Checks the default constructor") {
 
     float refresh_rate_ = 2;
 
-
     p1.UpdateSpeed(refresh_rate_);
     
     REQUIRE(p1.GetSpeed() == 3.5);
@@ -100,8 +99,6 @@ TEST_CASE("Checks the default constructor") {
 
     p1.MoveRight();
     REQUIRE(p1.GetXCoord() == 11);
-    
-
 }
 
 
