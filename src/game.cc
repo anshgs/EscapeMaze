@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "config.hpp"
 #include <iostream>
+#include <algorithm>
 #include <cmath>
 void Game::Config(){
 }
@@ -207,7 +208,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     win_tile_coords.push_back(win_tile_hitbox[10]);
 
     if(spedUp) inc*=2;
-    inc = min(inc, 0.0095f);
+    inc = std::min(inc, 0.0095f);
     if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
         // float c1 = (rand()%10)/10.0f;
         // float c2 = (rand()%10)/10.0f;

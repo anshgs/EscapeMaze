@@ -27,16 +27,40 @@
 
 /////////////////////////////Test cases for the mazes////////////////////////
 TEST_CASE( "Maze initialization" ) {
-  
+    Maze* m = new Maze(9, 9);
+    REQUIRE(m->GetHeight() == 9);
+    REQUIRE(m->GetWidth() == 9);
 }
 
-TEST_CASE( "Position of the walls in the Maze change" ) {
-  
+TEST_CASE( "Wall generating" ) {
+    Maze* m = new Maze(9, 9);
+    m->GenerateMaze(9,9);
+    //check the bounding wall is closed
+    for(int i = 0; i < 9; i++) {
+        Locinfo l = m->GetLocinfo(0,i);
+        REQUIRE(!l.up);
+        l = m->GetLocinfo(i,0);
+        REQUIRE(!l.left);
+    }
+    for(int i = 0; i < 9; i++) {
+        Locinfo l = m->GetLocinfo(8,i);
+        REQUIRE(!l.down);
+        l = m->GetLocinfo(i,8);
+        REQUIRE(!l.right);
+    }
 }
+
+
 
 TEST_CASE( "Background color of the maze changes" ) {
   
 }
+
+/////////////////////////////Test cases for the utils///////////////////////
+TEST_CASE("check coordinates casting") {
+
+}
+
 
 /////////////////////////////Test cases for the items///////////////////////
 
