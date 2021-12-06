@@ -50,55 +50,53 @@ TEST_CASE("Set random attributes") {
 TEST_CASE("Checks the Player object") {
     Player* p1 = new Player(); //Default constructor for this test case
 
-    REQUIRE(p1.GetSizeX() == 0); //checks if the x is 0 for the default constructor
-    REQUIRE(p1.GetSizeY() == 0); //checks if the y is 0 for the default constructor
-    REQUIRE(p1.GetSpeed() == 0); //checks if the default speed is 0 for the default constructor
+    REQUIRE(p1->GetSizeX() == 0); //checks if the x is 0 for the default constructor
+    REQUIRE(p1->GetSizeY() == 0); //checks if the y is 0 for the default constructor
+    REQUIRE(p1->GetSpeed() == 0); //checks if the default speed is 0 for the default constructor
     
     float coord_x = 2;
     float coord_y = 2;
     float speed = 5;
-    float size_x = 4;
-    float size_y = 4;
+    float size = 4;
 
-    p1.SetAttributes(coord_x, coord_y, speed, size_x, size_y);
+    p1->SetAttributes({coord_x, coord_y}, speed, size);
 
-    REQUIRE(p1.GetSizeX() == 4);
-    REQUIRE(p1.GetSizeY() == 4);
-    REQUIRE(p1.GetSpeed() == 5);
+    REQUIRE(p1->GetSizeX() == 4);
+    REQUIRE(p1->GetSizeY() == 4);
+    REQUIRE(p1->GetSpeed() == 5);
 
-    p1.SetSpeed(7);
-    REQUIRE(p1.GetSpeed() == 7);
+    p1->SetSpeed(7);
+    REQUIRE(p1->GetSpeed() == 7);
 
-    p1.SetXCoord(3);
-    REQUIRE(p1.GetXCoord() == 3);
+    p1->SetXCoord(3);
+    REQUIRE(p1->GetCenter().first == 3);
 
-    p1.SetYCoord(6);
-    REQUIRE(p1.GetYCoord() == 6);
+    p1->SetYCoord(6);
+    REQUIRE(p1->GetCenter().second == 6);
 
     float refresh_rate_ = 2;
 
-    p1.UpdateSpeed(refresh_rate_);
+    p1->UpdateSpeed(refresh_rate_);
     
-    REQUIRE(p1.GetSpeed() == 3.5);
+    REQUIRE(p1->GetSpeed() == 3.5);
 
-    float coord_x = 3;
-    float coord_y = 3;
-    float speed = 8;
-    float size_x = 5;
-    float size_y = 5;
-    p1.SetAttributes(coord_x, coord_y, speed, size_x, size_y);
+    coord_x = 3;
+    coord_y = 3;
+    speed = 8;
+    size = 5;
+    p1->SetAttributes({coord_x, coord_y}, speed, size);
 
-    p1.MoveUp();
-    REQUIRE(p1.GetYCoord() == 11);
+    p1->MoveUp();
+    REQUIRE(p1->GetCenter().second == 11);
 
-    p1.MoveDown();
-    REQUIRE(p1.GetYCoord() == -5);
+    p1->MoveDown();
+    REQUIRE(p1->GetCenter().second == -5);
 
-    p1.MoveLeft();
-    REQUIRE(p1.GetXCoord() == -5);
+    p1->MoveLeft();
+    REQUIRE(p1->GetCenter().first == -5);
 
-    p1.MoveRight();
-    REQUIRE(p1.GetXCoord() == 11);
+    p1->MoveRight();
+    REQUIRE(p1->GetCenter().first == 11);
 }
 
 
