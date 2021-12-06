@@ -23,9 +23,9 @@ int main()
     Level level5{0.001F, 25, ai_loc_5, 0.0005F, 25, 25, {0, 0}, {24, 24}, 4.0F, 25};
     
     Game game;
-    // game.AddLevel(level1);
-    // game.AddLevel(level2);
-    // game.AddLevel(level3);
+    game.AddLevel(level1);
+    game.AddLevel(level2);
+    game.AddLevel(level3);
     game.AddLevel(level4);
     game.AddLevel(level5);
     game.Init();
