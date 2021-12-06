@@ -30,6 +30,7 @@ void Game::Init(){
 }
 
 void Game::InitializeWindow(){
+    game_creation_time_ = chrono::system_clock::now();
     // glfw: initialize and configure
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -59,13 +60,12 @@ void Game::InitializeWindow(){
 void Game::GenerateNextLevel(){
     level_over = false;
     if(cur_level_ >= levels_.size()){
-        //TODO: Endgame handling
-        cout << "End of Game" << endl;
-        cout << refresh_rate_ << endl;
+        double timediff = chrono::duration_cast<chrono::seconds>(chrono::system_clock::now() - game_creation_time_).count();
+        cout << "Congratulations - You Win!" << "\nTime Taken: " << timediff << " seconds \nScore: " << 1000000.0f/timediff << endl;
         exit(EXIT_SUCCESS);
     }   
     Level next_level = levels_.at(cur_level_++);
-    num_items_ = next_level.num_items_; //update the number of items
+    num_items_ = next_level.num_items_; 
     items_.clear();
     for (int i = 0 ; i < num_items_ ; i++) {
         Item new_item;

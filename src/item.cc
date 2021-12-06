@@ -15,16 +15,10 @@ void Item::SetRandomAttributes(int h) { //add energy to the user
     coord_y_ = ty;
 
     if (item_name_ == "SpeedBoost") {  
-        size_x_ = 0.01f;
-        size_y_ = 0.01f;
         speed_boost_ = true;
     } else if (item_name_ == "Teleport"){
-        size_x_ = 0.005f;
-        size_y_ = 0.02f;
         teleport_ = true;
     } else if (item_name_ == "Invincible"){
-        size_x_ = 0.03f;
-        size_y_ = 0.005f;
         invincible_ = true;
     }
 

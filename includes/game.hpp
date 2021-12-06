@@ -39,6 +39,7 @@ class Game { //Game class
         unsigned int * vertex_buffer_objects_;
         map<string, vector<pair<int, const void*>>> name_to_size_data_;
         chrono::system_clock::time_point start_time_;
+        chrono::system_clock::time_point game_creation_time_;
         map<string, unsigned int> programs_;
 
         void Config();
