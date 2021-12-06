@@ -3,7 +3,8 @@
 #include "config.hpp"
 #include <iostream>
 #include <algorithm>
-#include <cmath>
+#include <cmath>    existing_items.insert(CastCoorGridToFloat(next_level.start_coord_.first, next_level.start_coord_.second, next_level.maze_height_));
+
 void Game::Config(){
 }
 
@@ -68,11 +69,19 @@ void Game::GenerateNextLevel(){
     Level next_level = levels_.at(cur_level_++);
     num_items_ = next_level.num_items_; 
     items_.clear();
-    for (int i = 0 ; i < num_items_ ; i++) {
+    set<pair<int, int>> existing_items;
+    existing_items.insert({next_level.start_coord_.first, next_level.start_coord_.second});
+    existing_items.insert({next_level.win_coord_.first, next_level.win_coord_.second});
+
+    while(items_.size() < num_items_){
         Item new_item;
         new_item.SetRandomAttributes(next_level.maze_height_);
-        items_.push_back(new_item);
+        if(existing_items.count(CastCoorFloatToGrid(new_item.GetCenter().first, new_item.GetCenter().second, next_level.maze_height_)) == 0){   
+            items_.push_back(new_item);
+            existing_items.insert(CastCoorFloatToGrid(new_item.GetCenter().first, new_item.GetCenter().second, next_level.maze_height_));
+        }
     }
+    existing_items.clear();
     player_->SetAttributes(CastCoorGridToFloat(next_level.start_coord_.first, next_level.start_coord_.second, next_level.maze_height_), next_level.player_speed_, (next_level.maze_height_-3)*(0.5F/next_level.maze_height_)/next_level.maze_height_);
     ai_.clear();
     if(next_level.num_ai_ > 0){    

@@ -31,6 +31,7 @@ public:
     bool GetSpeedBoost(); //returns the speed boost status
     bool GetInvincible(); //returns the invincible status
     bool GetTeleport(); //returns the teleport status
+    pair<float, float> GetCenter(); // returns center of item
 };
 
 #endif
