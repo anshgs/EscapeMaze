@@ -20,6 +20,8 @@ Make sure to have the latest release of Visual Studio and CMake installed before
 ```cd build```  
 ```cmake ..```  
 
+Windows:
+
 To compile the game:
 ```cmake --build . --target EscapeMaze --config Release```
 
@@ -31,3 +33,20 @@ To compile the test suite:
 
 To run the test suite:
 ```./tests/Release/tests.exe```
+
+Linux:
+
+
+To compile the game:
+```cmake --build .```
+
+To run the game:
+```./EscapeMaze```
+
+To compile the test suite:
+```cmake --build .```
+
+To run the test suite:
+```./tests/tests```
+
+
