@@ -11,8 +11,8 @@ void Ai::SetAttributes(pair<float, float> coords, float speed, float size){
     coord_y_ = coords.second;
     speed_ = speed;
     raw_speed_ = speed;
-    size_x_ = 1.2*size;
-    size_y_ = 1.2*size;
+    size_x_ = 1.2f*size;
+    size_y_ = 1.2f*size;
 }
 
 void Ai::UpdateSpeed(float refresh_rate_){

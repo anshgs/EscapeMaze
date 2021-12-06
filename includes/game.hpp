@@ -58,7 +58,7 @@ class Game { //Game class
         void Play(Level &level, Maze &maze);
         void ProcessInputAndRegenerate(Level &level, Maze &maze);
         std::vector<std::pair<int, const void*>> GetAiSizeData();
-        void ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
+        void ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
         void CheckOverlap(Maze &maze);
 
     public:
