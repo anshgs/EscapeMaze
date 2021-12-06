@@ -209,11 +209,11 @@ TEST_CASE("Checks the ai speed") {
     a1->SetAttributes(coords, speed, size);
     float refresh_rate_ = 2;
     a1->UpdateSpeed(refresh_rate_);
-    REQUIRE(a1->GetSpeed() == 0);
+    REQUIRE(a1->GetSpeed() == 4);
     
 }
 
-TEST_CASE("Move up") {
+TEST_CASE("Move up the position of ai") {
     Ai* a2 = new Ai();
     float coord_x = 3;
     float coord_y = 3;
