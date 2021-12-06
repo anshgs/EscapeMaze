@@ -105,7 +105,7 @@ float* CoorArray(vector<float*> coor) {
 unsigned int* CoorIndex(size_t size){
     unsigned int* output = new unsigned int[size*6];
     int pos = 0;
-    for(size_t i = 0; i< size; i++){
+    for(unsigned int i = 0; i< size; i++){
         output[pos] = 4*i;
         output[pos+1] = 4*i+1;
         output[pos+2] = 4*i+3;
