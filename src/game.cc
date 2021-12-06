@@ -188,7 +188,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     for(Ai* ai : ai_){
         ai_coords.push_back(ai->GetCorners());
     }
-    if(!invincible && CollideAi(player_current_coords, ai_coords, 0, 0)){
+    if(!invincible && !teleportColors && CollideAi(player_current_coords, ai_coords, 0, 0)){
         if(!game_over)
             std::cout << "Game Over - You Lose." << std::endl;
         game_over = true;

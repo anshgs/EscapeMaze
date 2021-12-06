@@ -10,7 +10,7 @@ void Item::SetRandomAttributes(int h) { //add energy to the user
 
     float tx = CastToCenter(coord_x_, coord_y_, mSize).first;
     float ty = CastToCenter(coord_x_, coord_y_, mSize).second;
-
+    
     coord_x_ = tx;
     coord_y_ = ty;
 

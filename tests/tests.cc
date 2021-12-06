@@ -86,6 +86,7 @@ TEST_CASE( "Background color of the maze changes" ) {
 
 /////////////////////////////Test cases for the utils///////////////////////
 TEST_CASE("CastCoorFloatToGrid test") {
+    
 }
 
 TEST_CASE("CastCoorGridToFloat test") {

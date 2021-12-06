@@ -31,6 +31,13 @@ const char *kFragmentShaderSourceWalls = "#version 330 core\n"
     "   FragColor = vec4(0.2f, 0.6f, 0.6f, 1.0f);\n"
     "}\n\0";
 
+const char *kFragmentShaderSourceTarget = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(0.2f, 0.9f, 0.6f, 1.0f);\n"
+    "}\n\0";
+
 const char *kFragmentShaderSourceItems = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
@@ -46,7 +53,7 @@ const char *kFragmentShaderSourceAi = "#version 330 core\n"
     "}\n\0";
 
 
-const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceWalls, kFragmentShaderSourcePlayer, kFragmentShaderSourceItems, kFragmentShaderSourceAi};
+const vector<const char*> kFragmentSources = {kFragmentShaderSourceWalls, kFragmentShaderSourceTarget, kFragmentShaderSourcePlayer, kFragmentShaderSourceItems, kFragmentShaderSourceAi};
 
 const vector<string> kNames = {"walls", "win_tile", "player", "items", "ai"};
 
