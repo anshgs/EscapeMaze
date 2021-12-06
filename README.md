@@ -21,10 +21,12 @@ cmake ..
 
 To compile the game:
 cmake --build . --target EscapeMaze --config Release
+
 To run the game:
-./src/Release/EscapeMaze.exe
+./src/Release/EscapeMaze.exe while within the build folder
 
 To compile the test suite:
 cmake --build . --target tests --config Release
+
 To run the test suite:
-./tests/Release/tests.exe
+./tests/Release/tests.exe while within the build folder
