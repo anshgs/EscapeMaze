@@ -86,11 +86,27 @@ TEST_CASE( "Background color of the maze changes" ) {
 
 /////////////////////////////Test cases for the utils///////////////////////
 TEST_CASE("CastCoorFloatToGrid test") {
+}
 
+TEST_CASE("CastCoorGridToFloat test") {
 
 }
 
+TEST_CASE("CastToCenter test") {
 
+}
+
+TEST_CASE("GetHitbox test") {
+
+}
+
+TEST_CASE("CollideOnMove test") {
+
+}
+
+TEST_CASE("CollideWalls test") {
+
+}
 /////////////////////////////Test cases for the items///////////////////////
 
 TEST_CASE("Set random attributes") {
