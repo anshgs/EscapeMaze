@@ -5,7 +5,7 @@ Welcome to EscapeMaze by Future Gadget Lab! In our game, you're tasked to escape
 * You're being chased by AI's who always follow the optimal path to reach you
 * The maze walls will randomly regenerate every few seconds. 
  
-Items along the way such as portals, speed boosts, and teleports will help you to evade the AI as you try to reach the exit. Do your best to avoid getting caught and reach the end of the final maze!
+Items along the way such as portals, speed boosts, and teleports will help you to evade the AI as you try to reach the exit. Do your best to avoid getting caught and reach the exit as quickly as possible!
 
 
 Built with C++ and OpenGL
