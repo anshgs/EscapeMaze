@@ -136,10 +136,8 @@ void Game::Play(Level &level, Maze &maze){
     chrono::system_clock::time_point speed_start_time = chrono::system_clock::now() ;
     chrono::system_clock::time_point invincible_start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
-        if(!game_over){
-            ProcessInputAndRegenerate(level, maze);
-            ProcessItems(level, maze, speed_start_time, invincible_start_time);
-        }
+        ProcessInputAndRegenerate(level, maze);
+        ProcessItems(level, maze, speed_start_time, invincible_start_time);
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
@@ -189,7 +187,9 @@ void Game::ProcessInput(Level &level, Maze &maze){
     for(Ai* ai : ai_){
         ai_coords.push_back(ai->GetCorners());
     }
-    if(CollideAi(player_current_coords, ai_coords, 0, 0)){
+    if(!invincible && CollideAi(player_current_coords, ai_coords, 0, 0)){
+        if(!game_over)
+            std::cout << "Game Over - You Lose. Press Escape to Exit." << std::endl;
         game_over = true;
         glClearColor(0.3F, 0.0F, 0.0F, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -220,7 +220,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
         exit(EXIT_SUCCESS);
     }
 
-    if(!level_over){
+    if(!level_over && !game_over){
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
                     player_->MoveRight(inc);

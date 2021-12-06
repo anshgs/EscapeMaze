@@ -21,7 +21,7 @@ const char *kFragmentShaderSourcePlayer = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
+    "   FragColor = vec4(0.6f, 0.6f, 0.9f, 1.0f);\n"
     "}\n\0";
 
 const char *kFragmentShaderSourceWalls = "#version 330 core\n"
@@ -35,14 +35,14 @@ const char *kFragmentShaderSourceItems = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(0.1f, 0.4f, 0.3f, 1.0f);\n" //last value 1.0f is for transparency r g b 
+    "   FragColor = vec4(0.1f, 0.4f, 0.3f, 1.0f);\n"  
     "}\n\0";
 
 const char *kFragmentShaderSourceAi = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.05f, 0.05f, 1.0f);\n" //last value 1.0f is for transparency r g b 
+    "   FragColor = vec4(1.0f, 0.05f, 0.05f, 1.0f);\n" 
     "}\n\0";
 
 
