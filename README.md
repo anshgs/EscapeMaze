@@ -19,8 +19,12 @@ mkdir build
 cd build
 cmake ..
 
-To run the game:
+To compile the game:
 cmake --build . --target EscapeMaze --config Release
+To run the game:
+./src/Release/EscapeMaze.exe
 
-To run the test suite:
+To compile the test suite:
 cmake --build . --target tests --config Release
+To run the test suite:
+./tests/Release/tests.exe
