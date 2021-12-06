@@ -142,6 +142,14 @@ void Ai::Seek(pair<float, float> player_coords, int height, Maze& maze){
         coord_y_ -= sqrt(y_diff*y_diff/(x_diff*x_diff + y_diff*y_diff)) * speed_;
 }
 
+float Ai::Getcoordx() {
+    return coord_x_;
+}
+        
+float Ai::Getcoordy() {
+    return coord_y_;
+}
+
 float * Ai::GetHitbox(){
     float x1 = coord_x_ - size_x_/2.0F;
     float x2 = coord_x_ + size_x_/2.0F;
