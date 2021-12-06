@@ -156,7 +156,6 @@ void Maze::MazeOut() {
 std::set<std::vector<float>> Maze::GetWallCoor() {
     std::set<std::vector<float>> toreturn;
     // -0.7 to 0.7
-    float range = 1.4f;
     // the height of every brick
     float b_height = 1.4f/height_;
     float b_width = 0.01f;
@@ -260,7 +259,7 @@ float* Maze::WallCoorArray(std::set<std::vector<float>> coor) {
 unsigned int* Maze::WallCoorIndex(size_t size){
     unsigned int* output = new unsigned int[size*6];
     int pos = 0;
-    for(size_t i = 0; i< size; i++){
+    for(unsigned int i = 0; i< size; i++){
         output[pos] = 4*i;
         output[pos+1] = 4*i+1;
         output[pos+2] = 4*i+3;
@@ -274,16 +273,4 @@ unsigned int* Maze::WallCoorIndex(size_t size){
 
 std::vector<std::pair<int, const void*>> Maze::GetSizeData(){
     return {{GetWallCoor().size()*48, WallCoorArray(GetWallCoor())},{GetWallCoor().size()*24, WallCoorIndex(GetWallCoor().size())}, {GetWallCoor().size()*6, (void*) 0}};
-}
-
-bool Maze::CheckWallOverlap(float y, float x) {
-    float b_height = 1.4f/height_;
-    float b_width = 0.01f;
-    // vertical wall
-    float mx = std::fmod(x, b_height);
-    int cell_x = floor(x/b_height);
-    float my = std::fmod(y,b_height);
-    int cell_y = floor(y/b_height);
-    // to do 
-    return false;
 }

@@ -54,6 +54,7 @@ void Game::InitializeWindow(){
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)
         {
+            window;
             glViewport(0, 0, width, height);
         });
     game_window_ = window;
@@ -62,7 +63,7 @@ void Game::InitializeWindow(){
 void Game::GenerateNextLevel(){
     level_over = false;
     if(cur_level_ >= levels_.size()){
-        double timediff = chrono::duration_cast<chrono::seconds>(chrono::system_clock::now() - game_creation_time_).count();
+        auto timediff = chrono::duration_cast<chrono::seconds>(chrono::system_clock::now() - game_creation_time_).count();
         cout << "Congratulations - You Win!" << "\nTime Taken: " << timediff << " seconds \nScore: " << 1000000.0f/timediff << endl;
         exit(EXIT_SUCCESS);
     }   
@@ -147,10 +148,10 @@ void Game::Play(Level &level, Maze &maze){
     chrono::system_clock::time_point invincible_start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
         ProcessInputAndRegenerate(level, maze);
-        ProcessItems(level, maze, speed_start_time, invincible_start_time);
+        ProcessItems(maze, speed_start_time, invincible_start_time);
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
-            refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
+            refresh_rate_ = static_cast<float>((1.0f*frame_counter)/(telapsed.count()));
             player_->UpdateSpeed(refresh_rate_);
             for(Ai* ai : ai_){
                 ai->UpdateSpeed(refresh_rate_);
@@ -295,7 +296,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
 }
 
-void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_){
+void Game::ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_){
     float* player_hitbox = player_->GetHitbox();
     vector<float> player_current_coords;
     player_current_coords.push_back(player_hitbox[0]);
@@ -552,10 +553,10 @@ void Game::CheckOverlap(Maze &maze) {
         }
         // std::cout<<a.first<<std::endl;
         // std::cout<<a.second<<std::endl;
-        float* player_hitbox = player_->GetHitbox();
-        player_current_coords[0] = player_hitbox[0];
-        player_current_coords[1] = player_hitbox[3];
-        player_current_coords[2] = player_hitbox[1];
-        player_current_coords[3] = player_hitbox[10];
+        float* t_player_hitbox = player_->GetHitbox();
+        player_current_coords[0] = t_player_hitbox[0];
+        player_current_coords[1] = t_player_hitbox[3];
+        player_current_coords[2] = t_player_hitbox[1];
+        player_current_coords[3] = t_player_hitbox[10];
     }
 }

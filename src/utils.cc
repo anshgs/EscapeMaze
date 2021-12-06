@@ -105,7 +105,7 @@ float* CoorArray(vector<float*> coor) {
 unsigned int* CoorIndex(size_t size){
     unsigned int* output = new unsigned int[size*6];
     int pos = 0;
-    for(size_t i = 0; i< size; i++){
+    for(unsigned int i = 0; i< size; i++){
         output[pos] = 4*i;
         output[pos+1] = 4*i+1;
         output[pos+2] = 4*i+3;
@@ -118,19 +118,18 @@ unsigned int* CoorIndex(size_t size){
 
 }
 pair<int,int> CastCoorFloatToGrid(float x, float y, int height_){
-    float range = 1.4f;
-    y = -y + 0.7;
-    x = x + 0.7;
+    y = -y + 0.7f;
+    x = x + 0.7f;
     // the height of every brick 
     float b_height = 1.4f/height_;
     // first check horizontal --x
-    int mx = floor(x/b_height);
+    int mx = (int)floor(x/b_height);
     // in the most right wall
     if(mx == height_) {
         mx = mx - 1;
     }
     // vertical --y
-    int my = floor(y/b_height);
+    int my = (int)floor(y/b_height);
     //in the most bottom wall
     if(my == height_) {
         my = my -1;
@@ -140,7 +139,6 @@ pair<int,int> CastCoorFloatToGrid(float x, float y, int height_){
 }
 
 pair<float,float> CastCoorGridToFloat(int x, int y, int height_) {
-    float range = 1.4f;
     // the height of every brick 
     float b_height = 1.4f/height_;
     // the width of every brick
