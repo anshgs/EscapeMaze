@@ -189,10 +189,12 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
     if(!invincible && CollideAi(player_current_coords, ai_coords, 0, 0)){
         if(!game_over)
-            std::cout << "Game Over - You Lose. Press Escape to Exit." << std::endl;
+            std::cout << "Game Over - You Lose." << std::endl;
         game_over = true;
         glClearColor(0.3F, 0.0F, 0.0F, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glfwSetWindowShouldClose(game_window_, true);
+        exit(EXIT_SUCCESS);
     }
 
     set<vector<float>> walls;
