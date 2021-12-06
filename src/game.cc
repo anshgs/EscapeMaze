@@ -186,8 +186,8 @@ void Game::ProcessInput(Level &level, Maze &maze){
     player_current_coords.push_back(player_hitbox[10]);
 
     vector<vector<float>> ai_coords;
-    for(Ai ai : ai_){
-        ai_coords.push_back(ai.GetCorners());
+    for(Ai* ai : ai_){
+        ai_coords.push_back(ai->GetCorners());
     }
     if(CollideAi(player_current_coords, ai_coords, 0, 0)){
         game_over = true;

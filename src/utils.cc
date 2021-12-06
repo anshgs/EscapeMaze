@@ -32,7 +32,7 @@ bool CollideWalls(vector<float> player_coords, set<vector<float>> walls_coords, 
 
 bool CollideAi(vector<float> player_coords, vector<vector<float>> ai_coords, float dx, float dy){ //x1 x2 y1 y2
     for(vector<float> ai_coord : ai_coords){
-        if(CollideOnMove(player_coords, ai_coords, dx, dy)){
+        if(CollideOnMove(player_coords, ai_coord, dx, dy)){
             return true;
         }
     }
