@@ -9,7 +9,9 @@ struct Locinfo{
     bool up; //position status of up
     bool down; //position status of down
     // use in map generation for reducing time complexity of vector search
-    bool visited; //determined whether visited or not
+    bool visited;
+    bool visited_by_ai;
+
     // todo: add constructor;
 };
 

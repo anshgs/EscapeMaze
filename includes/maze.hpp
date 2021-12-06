@@ -7,9 +7,11 @@
 #include <utility>
 class Maze { 
     public:
-        Maze(int width, int height); //constructor for the Maze by the given paramters being the width and the height 
-        int GetWidth(); //returns the width of the maze
-        int GetHeight(); //returns the height of the maze
+        Maze();
+        Maze(int width, int height);
+        int GetWidth();
+        int GetHeight();
+
         // return the information at location(x,y) of the maze
         Locinfo GetLocinfo(int y, int x);  //returns the location information while the parameters are y and x
         std::string RandomNeighbor(int y, int x); 
@@ -23,7 +25,6 @@ class Maze {
         unsigned int* WallCoorIndex(size_t size); //sets the wall coordinates to size
         std::vector<std::pair<int, const void*>> GetSizeData(); //returns the size of the data
         bool CheckWallOverlap(float y, float x); //check if the map overlaps with y and x
-
 
     private:
         int width_; //width of the maze

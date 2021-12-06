@@ -1,8 +1,10 @@
 #include "maze.hpp"
-#include <utility>
 #include <math.h>   
 #include <stack>
 #include <iostream>
+Maze::Maze(){
+    
+}
 Maze::Maze(int width, int height) {
     width_ = width;
     height_ = height;

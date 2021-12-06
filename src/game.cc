@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "config.hpp"
 #include <iostream>
+#include <cmath>
 void Game::Config(){
 }
 
@@ -71,8 +72,17 @@ void Game::GenerateNextLevel(){
         new_item.SetRandomAttributes(next_level.maze_height_);
         items_.push_back(new_item);
     }
-    player_->SetAttributes(next_level.start_coord_.first, next_level.start_coord_.second, next_level.player_speed_, next_level.player_width_, next_level.player_height_);
+    player_->SetAttributes(CastCoorGridToFloat(next_level.start_coord_.first, next_level.start_coord_.second, next_level.maze_height_), next_level.player_speed_, (next_level.maze_height_-3)*(0.5F/next_level.maze_height_)/next_level.maze_height_);
+    ai_.clear();
+    if(next_level.num_ai_ > 0){    
+        for(int i = 0; i < next_level.num_ai_; i++){
+            Ai* ai = new Ai();
+            ai->SetAttributes(CastCoorGridToFloat(next_level.ai_start_coords_[i].first, next_level.ai_start_coords_[i].second, next_level.maze_height_), next_level.ai_speed_, (next_level.maze_height_-3)*(0.5F/next_level.maze_height_)/next_level.maze_height_);
+            ai_.push_back(ai);
+        }
+    }
     Maze maze(next_level.maze_width_, next_level.maze_height_);
+
     start_time_ = chrono::system_clock::now();
     Play(next_level, maze);
 }
@@ -88,7 +98,7 @@ void Game::Play(Level &level, Maze &maze){
         name_to_size_data_[name] = vector<pair<int, const void*>>();
     }
     float * fetched_player_hitbox = player_->GetHitbox();
-    float * fetched_win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
+    float * fetched_win_tile_hitbox = GetHitbox(CastCoorGridToFloat(level.win_coord_.first, level.win_coord_.second, level.maze_height_), player_->GetSizeX(), player_->GetSizeY());
     float player_hitbox[12];
     float win_tile_hitbox[12];
     for(int i = 0; i < 12; i++){
@@ -116,6 +126,7 @@ void Game::Play(Level &level, Maze &maze){
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
+    name_to_size_data_["ai"] = GetAiSizeData();
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
     for (string name : kNames) {
         BindElement(name);
@@ -125,12 +136,17 @@ void Game::Play(Level &level, Maze &maze){
     chrono::system_clock::time_point speed_start_time = chrono::system_clock::now() ;
     chrono::system_clock::time_point invincible_start_time = chrono::system_clock::now();
     while(!glfwWindowShouldClose(game_window_)){
-        ProcessInputAndRegenerate(level, maze);
-        ProcessItems(level, maze, speed_start_time, invincible_start_time);
+        if(!game_over){
+            ProcessInputAndRegenerate(level, maze);
+            ProcessItems(level, maze, speed_start_time, invincible_start_time);
+        }
         chrono::duration<double, std::milli> telapsed = chrono::system_clock::now() - start_time;
         if(frame_counter <= 100){
             refresh_rate_ = (1.0f*frame_counter)/(telapsed.count());
             player_->UpdateSpeed(refresh_rate_);
+            for(Ai* ai : ai_){
+                ai->UpdateSpeed(refresh_rate_);
+            }
             frame_counter++;
         }
     }
@@ -143,6 +159,14 @@ void Game::Play(Level &level, Maze &maze){
     glfwTerminate();
 }
 
+vector<pair<int, const void*>> Game::GetAiSizeData(){
+    vector<float*> ai_coords_v;
+    for(int i = 0; i < ai_.size(); i++){
+        ai_coords_v.push_back(ai_[i]->GetHitbox());
+    }
+    return {{ai_coords_v.size()*48, CoorArray(ai_coords_v)},{ai_coords_v.size()*24, CoorIndex(ai_coords_v.size())}, {ai_coords_v.size()*6, (void*) 0}};
+}
+
 void Game::Draw(string object_name){
     glUseProgram(programs_.at(object_name));
     glBindVertexArray(vertex_array_objects_[kIndexMap.at(object_name)]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
@@ -150,6 +174,7 @@ void Game::Draw(string object_name){
 }
 
 void Game::ProcessInput(Level &level, Maze &maze){
+   
 
     float inc = player_->GetSpeed();
 
@@ -160,9 +185,19 @@ void Game::ProcessInput(Level &level, Maze &maze){
     player_current_coords.push_back(player_hitbox[1]);
     player_current_coords.push_back(player_hitbox[10]);
 
+    vector<vector<float>> ai_coords;
+    for(Ai* ai : ai_){
+        ai_coords.push_back(ai->GetCorners());
+    }
+    if(CollideAi(player_current_coords, ai_coords, 0, 0)){
+        game_over = true;
+        glClearColor(0.3F, 0.0F, 0.0F, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
     set<vector<float>> walls;
     walls = maze.GetWallCoor();
-    float* win_tile_hitbox = GetHitbox(level.win_coord_, player_->GetSizeX(), player_->GetSizeY());
+    float* win_tile_hitbox = GetHitbox(CastCoorGridToFloat(level.win_coord_.first, level.win_coord_.second, level.maze_height_), player_->GetSizeX(), player_->GetSizeY());
     vector<float> win_tile_coords;
     win_tile_coords.push_back(win_tile_hitbox[0]);
     win_tile_coords.push_back(win_tile_hitbox[3]);
@@ -170,7 +205,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     win_tile_coords.push_back(win_tile_hitbox[10]);
 
     if(spedUp) inc*=2;
-
+    inc = min(inc, 0.0095f);
     if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
         // float c1 = (rand()%10)/10.0f;
         // float c2 = (rand()%10)/10.0f;
@@ -186,25 +221,68 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
 
     if(!level_over){
-
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
-                    player_->MoveRight();
+                    player_->MoveRight(inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveRight(inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_LEFT) == GLFW_PRESS){
             if(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0))){
-                    player_->MoveLeft();
+                player_->MoveRight(-1*inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveRight(-1*inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_DOWN) == GLFW_PRESS){
             if(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc))){
-                    player_->MoveDown();
+                    player_->MoveUp(-1*inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveUp(-1*inc);
+                }
+                inc = temp_inc;
             }
         }
         if (glfwGetKey(game_window_, GLFW_KEY_UP) == GLFW_PRESS){
             if(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc))){
-                    player_->MoveUp();
+                player_->MoveUp(inc);
+            }
+            else{
+                int shiftcount = 0;
+                float temp_inc = inc;
+                while(shiftcount++ < 15 && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
+                    inc *= 0.75F;
+                }
+                if(shiftcount < 15){
+                    player_->MoveUp(inc);
+                }
+                inc = temp_inc;
             }
         }
     }
@@ -247,10 +325,10 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
     chrono::system_clock::time_point cur_time = chrono::system_clock::now();
     if(invincible){
         chrono::duration<double, std::milli> diff = chrono::system_clock::now() - invincible_start_time_;
-        if((diff.count()/500) - (int)(diff.count()/500) < 0.01 && !jchanged){
-            float c1 = (rand()%10)/10.0f;
-            float c2 = (rand()%10)/10.0f;
-            float c3 = (rand()%10)/10.0f;
+        if((diff.count()/500) - (int)(diff.count()/500) < 0.1 && !jchanged){
+            float c1 = (rand()%10)/20.0f;
+            float c2 = (rand()%10)/20.0f;
+            float c3 = (rand()%10)/20.0f;
             glClearColor(c1, c2, c3, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             jchanged = true;
@@ -293,6 +371,12 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
             name_to_size_data_["walls"] = maze.GetSizeData();
             BindElement("walls");
         }
+        
+        name_to_size_data_["ai"] = GetAiSizeData();
+        BindElement("ai");
+        // to do
+        CheckOverlap(maze);
+
         float * fetched_player_hitbox = player_->GetHitbox();
         float player_hitbox[12];
         for(int i = 0; i < 12; i++){
@@ -327,6 +411,9 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
     }
     
     ProcessInput(level, maze);
+    for(Ai* ai : ai_){
+        ai->Seek(player_->GetCenter(), level.maze_height_, maze);
+    }
     glfwSwapBuffers(game_window_);
     glfwPollEvents();
 }
@@ -411,4 +498,40 @@ void Game::BindElement(string object_name){
 
 void Game::AddLevel(Level level){
     levels_.push_back(level);
+}
+
+
+void Game::CheckOverlap(Maze &maze) {
+    float* player_hitbox = player_->GetHitbox();
+    vector<float> player_current_coords;
+    player_current_coords.push_back(player_hitbox[0]);
+    player_current_coords.push_back(player_hitbox[3]);
+    player_current_coords.push_back(player_hitbox[1]);
+    player_current_coords.push_back(player_hitbox[10]);
+    set<vector<float>> walls;
+    walls = maze.GetWallCoor();
+    // if collide with the wall
+    while(CollideWalls(player_current_coords, walls, 0, 0)) {
+        // std::cout<<"overlap with wall"<<std::endl;
+        std::pair<float,float> a = CastToCenter(player_hitbox[0],player_hitbox[1],maze.GetHeight());
+        float dx = a.first - player_hitbox[0];
+        float dy = a.second - player_hitbox[1];
+        if(dy > 0) {
+            player_->MoveUp(dy/10.0f);
+        } else {
+            player_->MoveUp(dy/10.0f);
+        }
+        if(dx > 0) {
+            player_->MoveRight(dx/10.0f);
+        } else {
+            player_->MoveRight(dx/10.0f);
+        }
+        // std::cout<<a.first<<std::endl;
+        // std::cout<<a.second<<std::endl;
+        float* player_hitbox = player_->GetHitbox();
+        player_current_coords[0] = player_hitbox[0];
+        player_current_coords[1] = player_hitbox[3];
+        player_current_coords[2] = player_hitbox[1];
+        player_current_coords[3] = player_hitbox[10];
+    }
 }

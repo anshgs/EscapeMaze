@@ -4,6 +4,7 @@
 #include "player.hpp"
 #include <string>
 #include <vector>
+#include <utility>
 
 using namespace std;
 class Item {
