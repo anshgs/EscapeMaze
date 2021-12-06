@@ -30,6 +30,8 @@ class Ai{
         float GetSizeX();
         float GetSizeY();
         float* GetHitbox();
+        float Getcoordx();
+        float Getcoordy();
         vector<float> GetCorners();
         pair<float, float> GetCenter();
         void UpdateSpeed(float refresh_rate_);

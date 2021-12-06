@@ -188,7 +188,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     for(Ai* ai : ai_){
         ai_coords.push_back(ai->GetCorners());
     }
-    if(!invincible && CollideAi(player_current_coords, ai_coords, 0, 0)){
+    if(!invincible && !teleportColors && CollideAi(player_current_coords, ai_coords, 0, 0)){
         if(!game_over)
             std::cout << "Game Over - You Lose." << std::endl;
         game_over = true;
@@ -302,8 +302,10 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
     if(tp_color_change == 20){
         tp_color_change=0;
         teleportColors = false;
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if(!invincible && !spedUp){
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
     }else if(teleportColors){
         tp_color_change++;
     }
@@ -353,16 +355,20 @@ void Game::ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_poi
         }
         if((diff).count() > 5*1000){
             invincible = false;
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            if(!teleportColors && !spedUp){
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+            }
         }
     }
 
     if(spedUp){
         chrono::duration<double, std::milli> diff = chrono::system_clock::now() - speed_start_time_;
         if((diff).count() > 10*1000){
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            if(!invincible && !teleportColors){
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+            }
             player_->SetSpeed(player_->GetSpeed()/2);
             spedUp = false;
         }

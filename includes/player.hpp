@@ -26,6 +26,9 @@ public:
     float GetSpeed();
     float GetSizeX();
     float GetSizeY();
+    float GetCoordsX();
+    float GetCoordsY();
+    float GetCoordsZ();
     float* GetHitbox();
     pair<float, float> GetCenter();
     void UpdateSpeed(float refresh_rate_);

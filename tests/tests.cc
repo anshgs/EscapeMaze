@@ -139,18 +139,8 @@ TEST_CASE("CollideOnMove test") {
 }
 
 
-TEST_CASE("CollideWalls test") {
 
-}
-/////////////////////////////Test cases for the items///////////////////////
-
-TEST_CASE("Set random attributes") {
- 
-
-}
-
-
-/////////////////////////////Test cases for the players//////////////////////
+/////////////////////////////TEST CASES FOR THE PLAYERS//////////////////////
 TEST_CASE("Checks the Player object") {
     Player* p1 = new Player(); //Default constructor for this test case
 
@@ -182,8 +172,6 @@ TEST_CASE("Checks the Player object") {
 
     p1->UpdateSpeed(refresh_rate_);
     
-    // REQUIRE(p1->GetSpeed() == 3.5);
-
     coord_x = 3;
     coord_y = 3;
     speed = 8;
@@ -203,6 +191,160 @@ TEST_CASE("Checks the Player object") {
     REQUIRE(p1->GetCenter().first == 3);
 }
 
+
+TEST_CASE("Checks the Player Default Constructor") {
+    Player* p1 = new Player(); //Default constructor for this test case
+
+    REQUIRE(p1->GetSizeX() == 0); //checks if the x is 0 for the default constructor
+    REQUIRE(p1->GetSizeY() == 0); //checks if the y is 0 for the default constructor
+    REQUIRE(p1->GetSpeed() == 0); //checks if the default speed is 0 for the default constructor
+
+}
+
+TEST_CASE("Checks the parameters feeded into the player object") {
+    Player* pa = new Player();
+    float coord_x = 2;
+    float coord_y = 2;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 5;
+    float size = 4;
+
+    pa->SetAttributes(coords, speed, size);
+
+    REQUIRE(pa->GetSizeX() == 4);
+    REQUIRE(pa->GetSizeY() == 4);
+    REQUIRE(pa->GetSpeed() == 5);
+
+    pa->SetSpeed(7);
+    REQUIRE(pa->GetSpeed() == 7);
+
+}
+
+TEST_CASE("Move up the position of player") {
+    Player* p = new Player();
+    float coord_x = 3;
+    float coord_y = 3;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 8;
+    float size = 5;
+    
+    p->SetAttributes(coords, speed, size);
+    p->MoveUp();
+    REQUIRE(p->GetCoordsY() == 11);
+}
+
+TEST_CASE("Move down the position of player") {
+    Player* p = new Player();
+    float coord_x = 5;
+    float coord_y = 5;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 15;
+    float size = 10;
+    
+    p->SetAttributes(coords, speed, size);
+    p->MoveDown();
+    REQUIRE(p->GetCoordsY() == -10);
+}
+
+TEST_CASE("Move left the position of player") {
+    Player* p = new Player();
+    float coord_x = 6;
+    float coord_y = 7;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 12;
+    float size = 9;
+    
+    p->SetAttributes(coords, speed, size);
+    p->MoveLeft();
+    REQUIRE(p->GetCoordsX() == -6);
+
+}
+
+TEST_CASE("Move right the position of player") {
+    Player* p = new Player();
+    float coord_x = 5;
+    float coord_y = 4;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 17;
+    float size = 12;
+    
+    p->SetAttributes(coords, speed, size);
+    p->MoveRight();
+    REQUIRE(p->GetCoordsX() == 22);
+
+}
+
+
+///////////////////////////////////TEST CASES FOR THE AI///////////////////////////////////////////////
+
+TEST_CASE("Checks the ai speed") {
+    Ai* a1 = new Ai(); //Default constructor for this test case
+    float coord_x = 3;
+    float coord_y = 3;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 8;
+    float size = 5;
+    
+    a1->SetAttributes(coords, speed, size);
+    float refresh_rate_ = 2;
+    a1->UpdateSpeed(refresh_rate_);
+    REQUIRE(a1->GetSpeed() == 4);
+    
+}
+
+TEST_CASE("Move up the position of ai") {
+    Ai* a2 = new Ai();
+    float coord_x = 3;
+    float coord_y = 3;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 8;
+    float size = 5;
+    
+    a2->SetAttributes(coords, speed, size);
+    a2->MoveUp();
+    REQUIRE(a2->Getcoordy() == 11);
+}
+
+TEST_CASE("Move down the position of ai") {
+    Ai* a3 = new Ai();
+    float coord_x = 5;
+    float coord_y = 5;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 15;
+    float size = 10;
+    
+    a3->SetAttributes(coords, speed, size);
+    a3->MoveDown();
+    REQUIRE(a3->Getcoordy() == -10);
+}
+
+TEST_CASE("Move left the position of ai") {
+    Ai* a4 = new Ai();
+    float coord_x = 6;
+    float coord_y = 7;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 12;
+    float size = 9;
+    
+    a4->SetAttributes(coords, speed, size);
+    a4->MoveLeft();
+    REQUIRE(a4->Getcoordx() == -6);
+
+}
+
+TEST_CASE("Move right the position of ai") {
+    Ai* a5 = new Ai();
+    float coord_x = 5;
+    float coord_y = 4;
+    std::pair<float,float> coords(coord_x,coord_y);
+    float speed = 17;
+    float size = 12;
+    
+    a5->SetAttributes(coords, speed, size);
+    a5->MoveRight();
+    REQUIRE(a5->Getcoordx() == 22);
+
+}
 
 
 

@@ -15,6 +15,18 @@ void Player::SetAttributes(pair<float, float> coords, float speed, float size){
     size_y_ = size;
 }
 
+float Player::GetCoordsX() {
+    return coord_x_;
+}
+    
+float Player::GetCoordsY() {
+    return coord_y_;
+}
+    
+float Player::GetCoordsZ() {
+    return coord_z_;
+}
+
 void Player::SetSpeed(float speed){
     speed_ = speed;
 }
@@ -75,7 +87,7 @@ float * Player::GetHitbox(){
     float x2 = coord_x_ + size_x_/2.0F;
     float y1 = coord_y_ - size_y_/2.0F;
     float y2 = coord_y_ + size_y_/2.0F;
-    //TODO: fix this
+    
     float * hitbox = new float[12];
     hitbox[0] = x1;
     hitbox[1] = y1;
