@@ -155,7 +155,6 @@ float * Ai::GetHitbox(){
     float x2 = coord_x_ + size_x_/2.0F;
     float y1 = coord_y_ - size_y_/2.0F;
     float y2 = coord_y_ + size_y_/2.0F;
-    //TODO: fix this
     float * hitbox = new float[12];
     hitbox[0] = x1;
     hitbox[1] = y1;

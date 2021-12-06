@@ -210,11 +210,6 @@ void Game::ProcessInput(Level &level, Maze &maze){
     if(spedUp) inc*=2;
     inc = std::min(inc, 0.0095f);
     if(CollideOnMove(player_current_coords, win_tile_coords, 0, 0)){
-        // float c1 = (rand()%10)/10.0f;
-        // float c2 = (rand()%10)/10.0f;
-        // float c3 = (rand()%10)/10.0f;
-        // glClearColor(c1, c2, c3, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT);
         level_over = true;
     }
 
@@ -396,7 +391,6 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
         
         name_to_size_data_["ai"] = GetAiSizeData();
         BindElement("ai");
-        // to do
         CheckOverlap(maze);
 
         float * fetched_player_hitbox = player_->GetHitbox();
@@ -534,7 +528,6 @@ void Game::CheckOverlap(Maze &maze) {
     walls = maze.GetWallCoor();
     // if collide with the wall
     while(CollideWalls(player_current_coords, walls, 0, 0)) {
-        // std::cout<<"overlap with wall"<<std::endl;
         std::pair<float,float> a = CastToCenter(player_hitbox[0],player_hitbox[1],maze.GetHeight());
         float dx = a.first - player_hitbox[0];
         float dy = a.second - player_hitbox[1];

@@ -46,7 +46,6 @@ float* GetHitbox(pair<float, float> center, float size_x, float size_y){
     float x2 = coord_x + size_x/2.0F;
     float y1 = coord_y - size_y/2.0F;
     float y2 = coord_y + size_y/2.0F;
-    //TODO: fix this
     float * hitbox = new float[12];
     hitbox[0] = x1;
     hitbox[1] = y1;
