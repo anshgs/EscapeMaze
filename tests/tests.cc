@@ -50,7 +50,11 @@ TEST_CASE( "Maze::GenerateMaze Test" ) {
     }
 }
 
-TEST_CASE( "Maze::GetWallCoor Test h = 10"){
+
+/////////////////////////////Test cases for the utils///////////////////////
+
+
+TEST_CASE("CastCoorFloatToGrid test h = 10") {
     int count = 0;
     //vertical
     for(float i = 0.69f; i >-0.7f; i -= 0.14f) {
@@ -65,7 +69,8 @@ TEST_CASE( "Maze::GetWallCoor Test h = 10"){
     }
 }
 
-TEST_CASE( "Maze::GetWallCoor Test h = 15"){
+
+TEST_CASE("CastCoorFloatToGrid test h = 15") {
     int count = 0;
     //vertical
     for(float i = 0.65f; i >-0.7f; i -= 0.0933f) {
@@ -80,29 +85,59 @@ TEST_CASE( "Maze::GetWallCoor Test h = 15"){
     }
 }
 
-TEST_CASE( "Background color of the maze changes" ) {
-  
+TEST_CASE("CastCoorGridToFloat test h = 10") {
+    float h = 0.14f;
+    float c = 0.075f;
+    for(int y = 0; y < 10; y++) {
+        for(int x = 0; x < 10; x++) {
+            REQUIRE(CastCoorGridToFloat(x, y, 10).first == x * h + c - 0.7f);
+            REQUIRE(CastCoorGridToFloat(x, y, 10).second == -y * h - c + 0.7f);
+        }
+    }
 }
 
-/////////////////////////////Test cases for the utils///////////////////////
-TEST_CASE("CastCoorFloatToGrid test") {
-}
-
-TEST_CASE("CastCoorGridToFloat test") {
-
-}
-
-TEST_CASE("CastToCenter test") {
-
+TEST_CASE("CastCoorGridToFloat test h = 8") {
+    float h = 0.175f;
+    float c = 0.0925f;
+    for(int y = 0; y < 8; y++) {
+        for(int x = 0; x < 8; x++) {
+            REQUIRE(CastCoorGridToFloat(x, y, 8).first == x * h + c - 0.7f);
+            REQUIRE(CastCoorGridToFloat(x, y, 8).second == -y * h - c + 0.7f);
+        }
+    }
 }
 
 TEST_CASE("GetHitbox test") {
-
+    pair<float,float> center = make_pair(0.4F,0.4F);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[0] == 0.4f-(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[1] == 0.4f-(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[2] == 0.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[3] == 0.4f+(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[4] == 0.4f-(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[5] == 0.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[6] == 0.4f+(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[7] == 0.4f+(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[8] == 0.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[9] == 0.4f-(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[10] == 0.4f+(0.03f)/2.0f);
+    REQUIRE(GetHitbox(center, 0.03f, 0.03f)[11] == 0.0f);
 }
 
 TEST_CASE("CollideOnMove test") {
-
+    vector<float> obj2 = {0.01F,0.2F,0.0F,0.2F};
+    vector<float> obj1 = {0.0F,0.04F,0.0F,0.2F};
+    REQUIRE(CollideOnMove(obj1,obj2, 0.03F,0.1F));
+    obj2 = {-0.04F,0.16F,-0.3F,-0.1F};
+    obj1 = {-0.04F,0.0F,-0.3F,-0.12F};
+    REQUIRE(CollideOnMove(obj1,obj2, 0.03F,0.1F));
+    obj2 = {0.0F,0.15F,0.0F,0.2F};
+    obj1 = {-0.05F,-0.01F,0.0F,0.2F};
+    REQUIRE(!CollideOnMove(obj1,obj2, 0.03F,0.0F));
+    obj2 = {0.0F,0.15F,-0.05F,0.15F};
+    obj1 = {-0.05F,-0.01F,-0.01F,0.15F};
+    REQUIRE(!CollideOnMove(obj1,obj2, 0.03F,0.0F));
 }
+
 
 TEST_CASE("CollideWalls test") {
 
