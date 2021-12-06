@@ -6,26 +6,24 @@
 #include "ai.hpp"
 #include "item.hpp"
 
-
 #include <iostream>
 #include <chrono>
 #include <utility>
 #include <map>
 struct Level{
-    const float player_speed_;
-    const int num_ai_;
+    const float player_speed_; //speed of the player
+    const int num_ai_;//number of AI
     const vector<pair<int, int>> ai_start_coords_;
-    const float ai_speed_;
-    const int maze_height_;
-    const int maze_width_;
-    const pair<int, int> start_coord_;
-    const pair<int, int> win_coord_; 
-    const float regen_time_interval;
-    const int num_items_;
-};
-class Game { 
-    
+    const float ai_speed_; //speed of the AI
+    const int maze_height_;//height of the maze
+    const int maze_width_;//width of the maze
+    const pair<int, int> start_coord_; //starting coordinate
+    const pair<int, int> win_coord_; //winning coordinate
+    const float regen_time_interval; //time interval of the maze regenerating
+    const int num_items_;//number of items in the game
 
+};
+class Game { //Game class
     private:
         size_t cur_level_ = 0;
         int num_items_ = 0;
@@ -59,17 +57,14 @@ class Game {
         std::vector<std::pair<int, const void*>> GetAiSizeData();
         void ProcessItems(Level &level, Maze &maze, chrono::system_clock::time_point &invincible_start_time_, chrono::system_clock::time_point &speed_start_time_);
         void CheckOverlap(Maze &maze);
+
     public:
-        void Init();
-        void GenerateNextLevel();
-        void AddLevel(Level level);
-        float refresh_rate_;
-        std::vector<Item> items_;
+        void Init(); //initialize random seed and the start time is also randomized
+        void GenerateNextLevel(); //function to generate the next level
+        void AddLevel(Level level); //add the level onto each other
+        float refresh_rate_; //the rate of the refreshing the game
+        std::vector<Item> items_; //vector of Item objects
 
 };
-
-
-
-
 
 #endif
