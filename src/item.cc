@@ -78,3 +78,7 @@ bool Item::GetInvincible() {
 bool Item::GetTeleport() {
     return teleport_;
 }
+
+pair<float, float> Item::GetCenter(){
+    return {coord_x_, coord_y_};
+}
