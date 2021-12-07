@@ -53,7 +53,7 @@ void Game::InitializeWindow(){
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)
         {
-            window;
+            window = window;
             glViewport(0, 0, width, height);
         });
     game_window_ = window;
