@@ -5,9 +5,6 @@
 #include <algorithm>
 #include <cmath>
 
-void Game::Config(){
-}
-
 void Game::Init(){
     // initialize random seed and start time
     srand((unsigned int)time(NULL));

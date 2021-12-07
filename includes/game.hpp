@@ -44,7 +44,6 @@ class Game { //Game class
         chrono::system_clock::time_point game_creation_time_;
         map<string, unsigned int> programs_;
 
-        void Config();
         void InitializeWindow();
         void ProcessInput(Level &level, Maze &maze);
         map<string, unsigned int> BuildShaders(const char* vertex_source, vector<const char*> fragment_sources, vector<string> fragment_names);
