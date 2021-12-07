@@ -64,6 +64,7 @@ void Game::GenerateNextLevel(){
         cout << "Congratulations - You Win!" << "\nTime Taken: " << timediff << " seconds \nScore: " << 1000000.0f/timediff << endl;
         exit(EXIT_SUCCESS);
     }   
+
     Level next_level = levels_.at(cur_level_++);
     num_items_ = next_level.num_items_; 
     items_.clear();
@@ -210,12 +211,12 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
     if(!invincible && !teleport_colors && CollideAi(player_current_coords, ai_coords, 0, 0)){
         if(!game_over)
-            std::cout << "Game Over - You Lose." << std::endl;
+            std::cout << "Game Over - You Lose.\nPress Enter to retry level.\nPress Space to restart game." << std::endl;
         game_over = true;
         glClearColor(0.3F, 0.0F, 0.0F, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glfwSetWindowShouldClose(game_window_, true);
-        exit(EXIT_SUCCESS);
+        // glfwSetWindowShouldClose(game_window_, true);
+        // exit(EXIT_SUCCESS);
     }
 
     set<vector<float>> walls;
@@ -236,6 +237,22 @@ void Game::ProcessInput(Level &level, Maze &maze){
     if (glfwGetKey(game_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(game_window_, true);
         exit(EXIT_SUCCESS);
+    }
+
+    if (game_over && glfwGetKey(game_window_, GLFW_KEY_SPACE) == GLFW_PRESS){
+        cur_level_ = 0;
+        game_over = false;
+        glClearColor(0.0F, 0.0F, 0.0F, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        GenerateNextLevel();
+    }
+
+    if (game_over && glfwGetKey(game_window_, GLFW_KEY_ENTER) == GLFW_PRESS){
+        cur_level_--;
+        game_over = false;
+        glClearColor(0.0F, 0.0F, 0.0F, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        GenerateNextLevel();
     }
 
     if(!level_over && !game_over){
