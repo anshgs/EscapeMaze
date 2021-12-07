@@ -131,11 +131,24 @@ void Game::Play(Level &level, Maze &maze){
         items_array_[pos+10]=cur[10];
         items_array_[pos+11]=cur[11];
     }
+    timerhitbox[0] = -0.875f;
+    timerhitbox[1] = 0.8f;
+    timerhitbox[2] = 0.0f;
+    timerhitbox[3] = -0.25f;
+    timerhitbox[4] = 0.8f;
+    timerhitbox[5] = 0.0f;
+    timerhitbox[6] = -0.25f;
+    timerhitbox[7] = 0.875;
+    timerhitbox[8] = 0.0f;
+    timerhitbox[9] = -0.875f;
+    timerhitbox[10] = 0.875f;
+    timerhitbox[11] = 0.0f;
     name_to_size_data_["player"] = {{sizeof(player_hitbox), player_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["win_tile"] = {{sizeof(win_tile_hitbox), win_tile_hitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     name_to_size_data_["walls"] = maze.GetSizeData();
     name_to_size_data_["ai"] = GetAiSizeData();
     name_to_size_data_["items"] = {{num_items_*48, items_array_},{num_items_*24, maze.WallCoorIndex(num_items_)}, {num_items_*6, (void*) 0}};
+    name_to_size_data_["timer"] = {{sizeof(timerhitbox), timerhitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
     for (string name : kNames) {
         BindElement(name);
     }
@@ -394,6 +407,8 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
     else{
         chrono::system_clock::time_point cur_time = chrono::system_clock::now();
         chrono::duration<double> elapsed = cur_time - start_time_;
+        timerhitbox[3] = -0.25f - (elapsed.count()/level.regen_time_interval * 0.625f);
+        timerhitbox[6] = -0.25f - (elapsed.count()/level.regen_time_interval * 0.625f);
         if(elapsed.count() > level.regen_time_interval){
             maze.GenerateMaze(maze.GetWidth(), maze.GetHeight());
             start_time_ = chrono::system_clock::now();
@@ -438,6 +453,9 @@ void Game::ProcessInputAndRegenerate(Level &level, Maze &maze){    // render
         }
     }
     
+    name_to_size_data_["timer"] = {{sizeof(timerhitbox), timerhitbox}, {sizeof(rectangle_ind), rectangle_ind}, {6, (void*) 0}};
+    BindElement("timer");
+
     ProcessInput(level, maze);
     for(Ai* ai : ai_){
         ai->Seek(player_->GetCenter(), level.maze_height_, maze);
