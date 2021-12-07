@@ -3,7 +3,7 @@
 #include "config.hpp"
 #include <iostream>
 #include <algorithm>
-#include <cmath>    existing_items.insert(CastCoorGridToFloat(next_level.start_coord_.first, next_level.start_coord_.second, next_level.maze_height_));
+#include <cmath>
 
 void Game::Config(){
 }
@@ -54,7 +54,7 @@ void Game::InitializeWindow(){
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)
         {
-            window;
+            window = window;
             glViewport(0, 0, width, height);
         });
     game_window_ = window;
@@ -198,7 +198,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     for(Ai* ai : ai_){
         ai_coords.push_back(ai->GetCorners());
     }
-    if(!invincible && !teleportColors && CollideAi(player_current_coords, ai_coords, 0, 0)){
+    if(!invincible && !teleport_colors && CollideAi(player_current_coords, ai_coords, 0, 0)){
         if(!game_over)
             std::cout << "Game Over - You Lose." << std::endl;
         game_over = true;
@@ -229,6 +229,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
     }
 
     if(!level_over && !game_over){
+        const int shiftcount_max = 7;
         if (glfwGetKey(game_window_, GLFW_KEY_RIGHT) == GLFW_PRESS){
             if(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0))){
                     player_->MoveRight(inc);
@@ -236,10 +237,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 5 && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
+                while(shiftcount++ < shiftcount_max && !(player_current_coords[3]+inc <= 1 && (!CollideWalls(player_current_coords, walls, inc, 0)))){
                     inc *= 0.5F;
                 }
-                if(shiftcount < 5){
+                if(shiftcount < shiftcount_max){
                     player_->MoveRight(inc);
                 }
                 inc = temp_inc;
@@ -252,10 +253,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 5 && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
+                while(shiftcount++ < shiftcount_max && !(player_current_coords[0]-inc>=-1 && (!CollideWalls(player_current_coords, walls, -inc, 0)))){
                     inc *= 0.5F;
                 }
-                if(shiftcount < 5){
+                if(shiftcount < shiftcount_max){
                     player_->MoveRight(-1*inc);
                 }
                 inc = temp_inc;
@@ -268,10 +269,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 5 && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
+                while(shiftcount++ < shiftcount_max && !(player_current_coords[1]-inc >= -1 && (!CollideWalls(player_current_coords, walls, 0, -inc)))){
                     inc *= 0.5F;
                 }
-                if(shiftcount < 5){
+                if(shiftcount < shiftcount_max){
                     player_->MoveUp(-1*inc);
                 }
                 inc = temp_inc;
@@ -284,10 +285,10 @@ void Game::ProcessInput(Level &level, Maze &maze){
             else{
                 int shiftcount = 0;
                 float temp_inc = inc;
-                while(shiftcount++ < 5 && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
+                while(shiftcount++ < shiftcount_max && !(player_current_coords[7]+inc <= 1 && (!CollideWalls(player_current_coords, walls, 0, inc)))){
                     inc *= 0.5F;
                 }
-                if(shiftcount < 5){
+                if(shiftcount < shiftcount_max){
                     player_->MoveUp(inc);
                 }
                 inc = temp_inc;
@@ -306,12 +307,16 @@ void Game::ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible
 
     if(tp_color_change == 20){
         tp_color_change=0;
-        teleportColors = false;
+        teleport_colors = false;
         if(!invincible && !spedUp){
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
         }
-    }else if(teleportColors){
+        if(spedUp){
+            glClearColor(0.0f, 0.5f, 0.0f, 0.4f);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }else if(teleport_colors){
         tp_color_change++;
     }
 
@@ -321,7 +326,7 @@ void Game::ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible
                 glClearColor(0.7f, 0.0f, 0.7f, 0.5f);
                 glClear(GL_COLOR_BUFFER_BIT);
                 tp_color_change = 0;
-                teleportColors = true;
+                teleport_colors = true;
                 float coord_x_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
                 float coord_y_ = -0.7f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.4f)));
                 float tx = CastToCenter(coord_x_, coord_y_, maze.GetHeight()).first;
@@ -360,7 +365,7 @@ void Game::ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible
         }
         if((diff).count() > 5*1000){
             invincible = false;
-            if(!teleportColors && !spedUp){
+            if(!teleport_colors && !spedUp){
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT);
             }
@@ -370,7 +375,7 @@ void Game::ProcessItems(Maze &maze, chrono::system_clock::time_point &invincible
     if(spedUp){
         chrono::duration<double, std::milli> diff = chrono::system_clock::now() - speed_start_time_;
         if((diff).count() > 10*1000){
-            if(!invincible && !teleportColors){
+            if(!invincible && !teleport_colors){
                 glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT);
             }

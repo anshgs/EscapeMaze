@@ -34,7 +34,7 @@ class Game { //Game class
         bool invincible = false;
         bool spedUp = false;
         bool jchanged;
-        bool teleportColors = false;
+        bool teleport_colors = false;
         unsigned int tp_color_change = 0;
         unsigned int * element_buffer_objects_;
         unsigned int * vertex_array_objects_;
