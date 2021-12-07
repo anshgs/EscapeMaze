@@ -14,7 +14,7 @@ Built with C++ and OpenGL
 ## Instructions to install and run the game/tests:
 Make sure to have the latest release of Visual Studio and CMake installed before attempting to run this project. Once in the desired directory, run the following commands:
 
-```git clone --recursive https://github.com/cs128-2021c/final-project-futuregadgetlab.git```  
+```git clone --recursive https://github.com/anshgs/EscapeMaze.git```  
 ```cd final-project-futuregadgetlab```  
 ```mkdir build```  
 ```cd build```  
