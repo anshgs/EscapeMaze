@@ -25,7 +25,6 @@ int main()
     Level level6{0.001F, 1, {{29, 29}}, 0.001F, 30, 30, {0, 0}, {29, 29}, 1.0F, 500};
     Level level7{0.001F, 1, {{29, 29}}, 0.002F, 30, 30, {0, 0}, {29, 29}, 0.5F, 1};
     Game game;
-    game.AddLevel(level6);
     game.AddLevel(level0);
     game.AddLevel(level1);
     game.AddLevel(level2);
