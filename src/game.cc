@@ -248,6 +248,7 @@ void Game::ProcessInput(Level &level, Maze &maze){
 
     if (game_over && glfwGetKey(game_window_, GLFW_KEY_SPACE) == GLFW_PRESS){
         cur_level_ = 0;
+        game_creation_time_ = chrono::system_clock::now();
         game_over = false;
         won = false;
         glClearColor(0.0F, 0.0F, 0.0F, 1.0f);
